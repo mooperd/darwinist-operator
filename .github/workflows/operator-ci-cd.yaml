@@ -2,10 +2,6 @@ name: Operator CI/CD
 
 on:
   push:
-    paths:
-      - 'operator/**'
-      - 'manifests/operator_*'
-      - '.github/workflows/operator-ci-cd.yaml'
 
 jobs:
   build-and-deploy:
@@ -14,22 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        working-directory: operator
-        run: |
-          pip install -r requirements.txt
-
-      - name: Lint and Test Operator Code
-        working-directory: operator
-        run: |
-          # Add linting and testing commands here
-          echo "No tests defined."
 
       - name: Log in to Docker Registry
         uses: docker/login-action@v2
@@ -41,7 +21,7 @@ jobs:
       - name: Build and Push Docker Image
         working-directory: operator
         env:
-          IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/your_operator_image
+          IMAGE_NAME: darwinist/operator
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $IMAGE_NAME:$IMAGE_TAG -f operator.Dockerfile .

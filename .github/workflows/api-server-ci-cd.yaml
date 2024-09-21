@@ -1,150 +1,8 @@
 
-
-Thought for 31 seconds
-
-Certainly! Below are GitHub Actions workflows that automate the building, testing, and deployment of your Kubernetes operator and API server. These workflows will:
-
-Build Docker images for both the operator and API server.
-Push the images to your Docker registry.
-Deploy the updated images to your Kubernetes cluster.
-Prerequisites
-Before setting up the GitHub Actions workflows, ensure you have:
-
-Docker Registry: An accessible Docker registry (e.g., Docker Hub, AWS ECR, Google Container Registry).
-
-Kubernetes Cluster Access: The GitHub Actions runner needs access to your Kubernetes cluster. This can be achieved by:
-
-Using a service account with appropriate permissions.
-Storing the Kubernetes config file (kubeconfig) securely as a GitHub secret.
-GitHub Repository Secrets: Store sensitive information as GitHub secrets:
-
-DOCKER_USERNAME: Your Docker registry username.
-DOCKER_PASSWORD: Your Docker registry password or access token.
-DOCKER_REGISTRY: URL of your Docker registry (e.g., docker.io for Docker Hub).
-KUBE_CONFIG: Base64-encoded kubeconfig file for cluster access.
-Directory Structure
-Assuming your repository has the following structure:
-
-arduino
-Copy code
-├── operator/
-│   ├── operator.py
-│   ├── operator.Dockerfile
-│   └── requirements.txt
-├── api_server/
-│   ├── api_server.py
-│   ├── api_server.Dockerfile
-│   └── requirements.txt
-├── manifests/
-│   ├── imageprocessingjob_crd.yaml
-│   ├── operator_deployment.yaml
-│   ├── operator_rbac.yaml
-│   ├── api_server_deployment.yaml
-│   ├── api_server_rbac.yaml
-└── .github/
-    └── workflows/
-        ├── operator-ci-cd.yaml
-        └── api-server-ci-cd.yaml
-1. Workflow for the Operator (operator-ci-cd.yaml)
-Create the file .github/workflows/operator-ci-cd.yaml:
-
-yaml
-Copy code
-name: Operator CI/CD
-
-on:
-  push:
-    paths:
-      - 'operator/**'
-      - 'manifests/operator_*'
-      - '.github/workflows/operator-ci-cd.yaml'
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        working-directory: operator
-        run: |
-          pip install -r requirements.txt
-
-      - name: Lint and Test Operator Code
-        working-directory: operator
-        run: |
-          # Add linting and testing commands here
-          echo "No tests defined."
-
-      - name: Log in to Docker Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and Push Docker Image
-        working-directory: operator
-        env:
-          IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/your_operator_image
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $IMAGE_NAME:$IMAGE_TAG -f operator.Dockerfile .
-          docker push $IMAGE_NAME:$IMAGE_TAG
-
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'v1.26.0'  # Adjust as needed
-
-      - name: Configure Kubeconfig
-        run: |
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
-
-      - name: Deploy Operator Manifests
-        run: |
-          kubectl apply -f manifests/operator_rbac.yaml
-          kubectl apply -f manifests/operator_deployment.yaml
-
-      - name: Update Operator Deployment Image
-        run: |
-          kubectl set image deployment/image-processing-operator operator=${{ secrets.DOCKER_REGISTRY }}/your_operator_image:${{ github.sha }}
-
-      - name: Rollout Status
-        run: |
-          kubectl rollout status deployment/image-processing-operator
-Explanation
-Triggers: The workflow runs when there is a push to the operator/ directory, operator manifests, or the workflow file itself.
-Steps:
-Checkout Code: Fetches the repository code.
-Set up Python and Install Dependencies: Prepares the environment for any testing or linting.
-Lint and Test: Placeholder for adding linting (e.g., flake8) and testing (e.g., pytest).
-Docker Login: Authenticates to your Docker registry using credentials stored in GitHub secrets.
-Build and Push Docker Image: Builds the operator Docker image and pushes it to the registry with a tag corresponding to the Git commit SHA.
-Set up Kubectl and Configure Kubeconfig: Sets up kubectl and uses the KUBE_CONFIG secret to access your cluster.
-Deploy Manifests: Applies the RBAC and deployment manifests.
-Update Deployment Image: Updates the deployment to use the new image.
-Rollout Status: Waits for the deployment to be successfully rolled out.
-2. Workflow for the API Server (api-server-ci-cd.yaml)
-Create the file .github/workflows/api-server-ci-cd.yaml:
-
-yaml
-Copy code
 name: API Server CI/CD
 
 on:
   push:
-    paths:
-      - 'api_server/**'
-      - 'manifests/api_server_*'
-      - '.github/workflows/api-server-ci-cd.yaml'
 
 jobs:
   build-and-deploy:
@@ -153,22 +11,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        working-directory: api_server
-        run: |
-          pip install -r requirements.txt
-
-      - name: Lint and Test API Server Code
-        working-directory: api_server
-        run: |
-          # Add linting and testing commands here
-          echo "No tests defined."
 
       - name: Log in to Docker Registry
         uses: docker/login-action@v2
@@ -180,7 +22,8 @@ jobs:
       - name: Build and Push Docker Image
         working-directory: api_server
         env:
-          IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/your_api_server_image
+          # IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/your_api_server_image
+          IMAGE_NAME: darwinist/operator_api_server
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $IMAGE_NAME:$IMAGE_TAG -f api_server.Dockerfile .
