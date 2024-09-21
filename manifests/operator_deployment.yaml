@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-processing-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-processing-operator
+  template:
+    metadata:
+      labels:
+        app: image-processing-operator
+    spec:
+      serviceAccountName: operator-sa
+      containers:
+        - name: operator
+          image: your_docker_registry/your_operator_image:latest
+          imagePullPolicy: Always
