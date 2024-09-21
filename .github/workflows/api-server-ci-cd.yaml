@@ -27,5 +27,5 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           ls
-          docker build -t $IMAGE_NAME:$IMAGE_TAG -f api_server.Dockerfile ./api_server
+          docker build -t $IMAGE_NAME:$IMAGE_TAG -f api_server.Dockerfile .
           docker push $IMAGE_NAME:$IMAGE_TAG
