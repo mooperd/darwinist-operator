@@ -24,6 +24,5 @@ jobs:
           IMAGE_NAME: darwinist/operator
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          ls
-          docker build -t $IMAGE_NAME:$IMAGE_TAG -f operator.Dockerfile ./operator
+          docker build -t $IMAGE_NAME:$IMAGE_TAG -f operator.Dockerfile .
           docker push $IMAGE_NAME:$IMAGE_TAG
