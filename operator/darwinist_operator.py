@@ -23,7 +23,7 @@ def on_create(spec, name, namespace, logger, **kwargs):
     job_name = f"ipj-{name}"
 
     # Define the container image to use (replace with your actual image)
-    container_image = "your_docker_registry/your_image:latest"
+    container_image = "ubuntu"
 
     # Define the Kubernetes Job
     job_manifest = {
@@ -53,6 +53,7 @@ def on_create(spec, name, namespace, logger, **kwargs):
                         {
                             'name': 'image-processor',
                             'image': container_image,
+                            'cmd': ['env'],
                             'env': [
                                 {'name': 'S3_INPUT_LOCATION', 'value': s3_input_location},
                                 {'name': 'MODEL_NAME', 'value': model_name},

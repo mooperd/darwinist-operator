@@ -15,7 +15,7 @@ spec:
       serviceAccountName: api-server-sa
       containers:
         - name: api-server
-          image: your_docker_registry/your_api_server_image:latest
+          image: darwinist/operator_api_server:latest
           ports:
             - containerPort: 8080
           imagePullPolicy: Always

@@ -15,5 +15,5 @@ spec:
       serviceAccountName: operator-sa
       containers:
         - name: operator
-          image: your_docker_registry/your_operator_image:latest
+          image: darwinist/operator:latest
           imagePullPolicy: Always
