@@ -15,5 +15,5 @@ spec:
       serviceAccountName: operator-sa
       containers:
         - name: operator
-          image: darwinist/operator:latest
+          image: darwinist/operator:$GITSHA
           imagePullPolicy: Always

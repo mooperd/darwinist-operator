@@ -15,7 +15,7 @@ spec:
       serviceAccountName: api-server-sa
       containers:
         - name: api-server
-          image: darwinist/operator_api_server:latest
+          image: darwinist/operator_api_server:$GITSHA
           ports:
             - containerPort: 8080
           imagePullPolicy: Always

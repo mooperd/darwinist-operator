@@ -23,7 +23,7 @@ def on_create(spec, name, namespace, logger, **kwargs):
     job_name = f"ipj-{name}"
 
     # Define the container image to use (replace with your actual image)
-    container_image = "ubuntu"
+    container_image = "nvcr.io/nvidia/cloud-native/dcgm:3.3.0-1-ubuntu22.04"
 
     # Define the Kubernetes Job
     job_manifest = {
@@ -53,7 +53,9 @@ def on_create(spec, name, namespace, logger, **kwargs):
                         {
                             'name': 'image-processor',
                             'image': container_image,
-                            'cmd': ['env'],
+                            'command': ["/usr/bin/dcgmproftester12"],
+                            'args': ["--no-dcgm-validation", "-t 1004", "-d 30"],
+                            'resources': {'limits': {"nvidia.com/gpu:": 1}},
                             'env': [
                                 {'name': 'S3_INPUT_LOCATION', 'value': s3_input_location},
                                 {'name': 'MODEL_NAME', 'value': model_name},
