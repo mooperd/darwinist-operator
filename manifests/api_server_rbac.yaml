@@ -8,7 +8,7 @@ kind: ClusterRole
 metadata:
   name: api-server-cluster-role
 rules:
-  - apiGroups: ["example.com"]
+  - apiGroups: ["darwinist.io"]
     resources: ["imageprocessingjobs"]
     verbs: ["create"]
 ---

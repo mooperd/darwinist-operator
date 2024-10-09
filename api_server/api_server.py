@@ -40,14 +40,14 @@ def process_image(request: ImageProcessingRequest):
         }
     }
 
-    # try:
-    api_instance.create_namespaced_custom_object(
-        group=group,
-        version=version,
-        namespace=namespace,
-        plural=plural,
-        body=body,
-    )
-    return {"message": "Image processing job created.", "job_name": resource_name}
-    # except client.rest.ApiException as e:
-        # raise HTTPException(status_code=500, detail=str(e))
+    try:
+        api_instance.create_namespaced_custom_object(
+            group=group,
+            version=version,
+            namespace=namespace,
+            plural=plural,
+            body=body,
+        )
+        return {"message": "Image processing job created.", "job_name": resource_name}
+    except client.rest.ApiException as e:
+        raise HTTPException(status_code=500, detail=str(e))

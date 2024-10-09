@@ -16,7 +16,8 @@ def call_process_image(s3_input_location, model_name, s3_output_location, host='
     Raises:
         Exception: If the API request fails.
     """
-    url = f"http://darwinist-api-server.apps.goose.hpc-l.com/process-image/"
+    # url = f"http://darwinist-api-server.apps.goose.hpc-l.com/process-image/"
+    url = f"http://0.0.0.0:8080/process-image/"
     payload = {
         's3_input_location': s3_input_location,
         'model_name': model_name,
