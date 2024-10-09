@@ -34,7 +34,7 @@ def on_create(spec, name, namespace, logger, **kwargs):
             'namespace': namespace,
             'ownerReferences': [
                 {
-                    'apiVersion': 'example.com/v1',
+                    'apiVersion': 'darwinist.io/v1',
                     'kind': 'ImageProcessingJob',
                     'name': name,
                     'uid': kwargs['body']['metadata']['uid'],

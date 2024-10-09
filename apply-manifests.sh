@@ -2,6 +2,7 @@
 
 export GITSHA=$(git rev-parse HEAD)
 
+kubectl apply -f manifests/namespace.yaml
 cat manifests/api_server_deployment.yaml | envsubst | kubectl apply -n darwinist -f -
 cat manifests/api_server_rbac.yaml | envsubst | kubectl apply -n darwinist -f -
 cat manifests/imageprocessingjob_crd.yaml | envsubst | kubectl apply -n darwinist -f -

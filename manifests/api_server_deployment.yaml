@@ -16,6 +16,7 @@ spec:
       containers:
         - name: api-server
           image: darwinist/operator_api_server:$GITSHA
+          command: ["uvicorn", "api_server:app", "--log-level", "trace", "--host", "0.0.0.0", "--port", "8080"]
           ports:
             - containerPort: 8080
           imagePullPolicy: Always

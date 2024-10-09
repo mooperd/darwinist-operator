@@ -2,10 +2,11 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from kubernetes import client, config
 import uuid
+import uvicorn
 
 # Load Kubernetes configuration
-config.load_incluster_config()  # Use this if running inside a cluster
-# config.load_kube_config()     # Use this if running locally for testing
+# config.load_incluster_config()  # Use this if running inside a cluster
+config.load_kube_config()     # Use this if running locally for testing
 
 app = FastAPI()
 
@@ -18,7 +19,7 @@ class ImageProcessingRequest(BaseModel):
 @app.post("/process-image/")
 def process_image(request: ImageProcessingRequest):
     api_instance = client.CustomObjectsApi()
-    group = 'example.com'
+    group = 'darwinist.io'
     version = 'v1'
     namespace = 'default'  # Change if needed
     plural = 'imageprocessingjobs'
@@ -39,14 +40,14 @@ def process_image(request: ImageProcessingRequest):
         }
     }
 
-    try:
-        api_instance.create_namespaced_custom_object(
-            group=group,
-            version=version,
-            namespace=namespace,
-            plural=plural,
-            body=body,
-        )
-        return {"message": "Image processing job created.", "job_name": resource_name}
-    except client.rest.ApiException as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # try:
+    api_instance.create_namespaced_custom_object(
+        group=group,
+        version=version,
+        namespace=namespace,
+        plural=plural,
+        body=body,
+    )
+    return {"message": "Image processing job created.", "job_name": resource_name}
+    # except client.rest.ApiException as e:
+        # raise HTTPException(status_code=500, detail=str(e))
