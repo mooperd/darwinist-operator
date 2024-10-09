@@ -7,8 +7,10 @@ import os
 kubernetes.config.load_incluster_config()  # Use this if running inside a cluster
 # kubernetes.config.load_kube_config()     # Use this if running locally for testing
 
-@kopf.on.create('imageprocessingjobs', namespace='darwinist')
+@kopf.on.create('imageprocessingjobs')
 def on_create(spec, name, namespace, logger, **kwargs):
+    #TODO: Fix hardcoded namespace here!
+    namespace="darwinist"
     logger.info(f"Processing ImageProcessingJob {name} in namespace {namespace}")
 
     s3_input_location = spec.get('s3_input_location')
@@ -80,7 +82,7 @@ def on_create(spec, name, namespace, logger, **kwargs):
         logger.error(f"Exception when creating Job: {e}")
         raise kopf.TemporaryError(f"Failed to create Job {job_name}", delay=30)
 
-@kopf.on.delete('imageprocessingjobs', namespace='darwinist')
+@kopf.on.delete('imageprocessingjobs')
 def on_delete(spec, name, namespace, logger, **kwargs):
     logger.info(f"Cleaning up resources for ImageProcessingJob {name}")
     job_name = f"ipj-{name}"
