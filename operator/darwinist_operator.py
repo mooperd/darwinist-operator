@@ -57,7 +57,7 @@ def on_create(spec, name, namespace, logger, **kwargs):
                             'image': container_image,
                             'command': ["/usr/bin/dcgmproftester12"],
                             'args': ["--no-dcgm-validation", "-t 1004", "-d 30"],
-                            'resources': {'limits': {"nvidia.com/gpu:": 1}},
+                            'resources': {'limits': {"nvidia.com/gpu": 1}},
                             'env': [
                                 {'name': 'S3_INPUT_LOCATION', 'value': s3_input_location},
                                 {'name': 'MODEL_NAME', 'value': model_name},

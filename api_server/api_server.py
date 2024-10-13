@@ -21,7 +21,7 @@ def process_image(request: ImageProcessingRequest):
     api_instance = client.CustomObjectsApi()
     group = 'darwinist.io'
     version = 'v1'
-    namespace = 'default'  # Change if needed
+    namespace = 'darwinist'  # Change if needed
     plural = 'imageprocessingjobs'
 
     # Generate a unique name for the custom resource
