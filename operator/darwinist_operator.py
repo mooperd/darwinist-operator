@@ -8,7 +8,7 @@ kubernetes.config.load_incluster_config()  # Use this if running inside a cluste
 # kubernetes.config.load_kube_config()     # Use this if running locally for testing
 
 @kopf.on.create('imageprocessingjobs')
-def on_create(spec, name, namespace, logger, **kwargs):
+def on_create(spec, name, namespace, logger, patch, **kwargs):
     #TODO: Fix hardcoded namespace here!
     namespace="darwinist"
     logger.info(f"Processing ImageProcessingJob {name} in namespace {namespace}")
@@ -78,6 +78,9 @@ def on_create(spec, name, namespace, logger, **kwargs):
     try:
         batch_v1.create_namespaced_job(namespace=namespace, body=job_manifest)
         logger.info(f"Job {job_name} created successfully.")
+        # Update the status to reflect that the job is created
+        patch.status['state'] = 'Created'
+        patch.status['message'] = f'Job {job_name} created and running.'
     except ApiException as e:
         logger.error(f"Exception when creating Job: {e}")
         raise kopf.TemporaryError(f"Failed to create Job {job_name}", delay=30)

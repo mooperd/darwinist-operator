@@ -25,6 +25,31 @@ spec:
                   type: string
                 s3_output_location:
                   type: string
+            status:
+              type: object
+              properties:
+                state:
+                  type: string
+                message:
+                  type: string
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+                      lastUpdateTime:
+                        type: string
+      subresources:
+        status: {}  # Enables the status subresource
+
   scope: Namespaced
   names:
     plural: imageprocessingjobs
