@@ -5,8 +5,8 @@ import uuid
 import uvicorn
 
 # Load Kubernetes configuration
-# config.load_incluster_config()  # Use this if running inside a cluster
-config.load_kube_config()     # Use this if running locally for testing
+config.load_incluster_config()  # Use this if running inside a cluster
+# config.load_kube_config()     # Use this if running locally for testing
 
 app = FastAPI()
 
@@ -50,4 +50,5 @@ def process_image(request: ImageProcessingRequest):
         )
         return {"message": "Image processing job created.", "job_name": resource_name}
     except client.rest.ApiException as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
