@@ -107,47 +107,42 @@ def on_delete(spec, name, namespace, logger, **kwargs):
 #TODO: Impliment this function to update job status
 
 
-# Timer to periodically check the status of jobs owned by the ImageProcessingJob
-@kopf.timer('imageprocessingjobs', interval=60.0)  # Check every 60 seconds
-def check_job_status(spec, status, name, namespace, logger, patch, **kwargs):
-    namespace = "darwinist"  # TODO: Fix hardcoded namespace if needed
-    job_name = f"ipj-{name}"
+@kopf.on.update('batch/v1', 'jobs')  # Track updates to all jobs
+def on_job_update(namespace, name, status, labels, logger, **kwargs):
+    # Check if the job is one of the image processing jobs
+    if 'job-name' in labels and labels['job-name'].startswith("ipj-"):
+        job_name = labels['job-name']
+        logger.info(f"Job {job_name} in namespace {namespace} has been updated.")
 
-    batch_v1 = kubernetes.client.BatchV1Api()
+        # Extract job conditions and update the ImageProcessingJob status
+        job_conditions = status.get('conditions', [])
+        for condition in job_conditions:
+            if condition['type'] == 'Complete' and condition['status'] == 'True':
+                logger.info(f"Job {job_name} completed successfully.")
+                # Here you would patch the associated ImageProcessingJob's status
+                update_imageprocessingjob_status(job_name, namespace, 'Succeeded', logger)
+            elif condition['type'] == 'Failed' and condition['status'] == 'True':
+                logger.error(f"Job {job_name} failed.")
+                # Here you would patch the associated ImageProcessingJob's status
+                update_imageprocessingjob_status(job_name, namespace, 'Failed', logger)
+
+def update_imageprocessingjob_status(job_name, namespace, state, logger):
+    # Extract the ImageProcessingJob name from the job name
+    imageprocessingjob_name = job_name.replace('ipj-', '')
+
+    # Get the CustomObjectsApi to patch the ImageProcessingJob status
+    custom_objects_api = kubernetes.client.CustomObjectsApi()
     
     try:
-        # Fetch the job associated with this ImageProcessingJob
-        job = batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
-
-        # Extract job conditions
-        job_conditions = job.status.conditions if job.status.conditions else []
-
-        # Check if the job has completed or failed
-        for condition in job_conditions:
-            if condition.type == "Complete" and condition.status == "True":
-                logger.info(f"Job {job_name} completed successfully.")
-                
-                # Update the status with success
-                s3_output_location = spec.get('s3_output_location')
-                patch.status['state'] = 'Succeeded'
-                patch.status['message'] = 'Job completed successfully.'
-                patch.status['result_location'] = s3_output_location
-                return  # Exit after updating success status
-
-            elif condition.type == "Failed" and condition.status == "True":
-                logger.error(f"Job {job_name} failed.")
-                
-                # Update the status with failure
-                patch.status['state'] = 'Failed'
-                patch.status['message'] = 'Job failed.'
-                return  # Exit after updating failure status
-
-        # If the job hasn't completed or failed, it's still running
-        patch.status['state'] = 'Running'
-        patch.status['message'] = 'Job is still running.'
-        logger.info(f"Job {job_name} is still running.")
-
+        # Patch the status of the ImageProcessingJob
+        custom_objects_api.patch_namespaced_custom_object_status(
+            group="darwinist.io",
+            version="v1",
+            namespace=namespace,
+            plural="imageprocessingjobs",
+            name=imageprocessingjob_name,
+            body={"status": {"state": state, "message": f"Job {job_name} {state.lower()}."}}
+        )
+        logger.info(f"Updated ImageProcessingJob {imageprocessingjob_name} with state: {state}")
     except ApiException as e:
-        logger.error(f"Exception when reading Job status: {e}")
-        patch.status['state'] = 'Unknown'
-        patch.status['message'] = f'Failed to fetch status of job {job_name}.'
+        logger.error(f"Failed to update ImageProcessingJob {imageprocessingjob_name} status: {e}")
