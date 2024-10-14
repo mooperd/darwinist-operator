@@ -103,3 +103,51 @@ def on_delete(spec, name, namespace, logger, **kwargs):
         logger.info(f"Job {job_name} deleted.")
     except ApiException as e:
         logger.error(f"Exception when deleting Job: {e}")
+
+#TODO: Impliment this function to update job status
+
+
+
+@kopf.on.update('imageprocessingjobs')
+def on_update(spec, status, name, namespace, logger, patch, **kwargs):
+    logger.info(f"Updating status for ImageProcessingJob {name} in namespace {namespace}")
+    
+    # Define the job name based on the ImageProcessingJob name
+    job_name = f"ipj-{name}"
+
+    # Fetch the Job status from Kubernetes
+    batch_v1 = kubernetes.client.BatchV1Api()
+    try:
+        job = batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
+        
+        # Extract job conditions
+        job_conditions = job.status.conditions if job.status.conditions else []
+
+        # Check if the job has completed or failed
+        for condition in job_conditions:
+            if condition.type == "Complete" and condition.status == "True":
+                logger.info(f"Job {job_name} completed successfully.")
+                
+                # Update the status with success
+                s3_output_location = spec.get('s3_output_location')
+                patch.status['state'] = 'Succeeded'
+                patch.status['message'] = 'Job completed successfully.'
+                patch.status['result_location'] = s3_output_location
+                return  # Exit after updating success status
+
+            elif condition.type == "Failed" and condition.status == "True":
+                logger.error(f"Job {job_name} failed.")
+                
+                # Update the status with failure
+                patch.status['state'] = 'Failed'
+                patch.status['message'] = 'Job failed.'
+                return  # Exit after updating failure status
+
+        # If the job hasn't completed or failed, it's still running
+        patch.status['state'] = 'Running'
+        patch.status['message'] = 'Job is still running.'
+        logger.info(f"Job {job_name} is still running.")
+
+    except ApiException as e:
+        logger.error(f"Exception when reading Job status: {e}")
+        raise kopf.TemporaryError(f"Failed to fetch Job {job_name} status", delay=30)

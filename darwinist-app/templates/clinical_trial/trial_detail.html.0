@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ trial.TrialName }}</h1>
+<p><strong>Description:</strong> {{ trial.Description }}</p>
+<p><strong>Product:</strong> <a href="{{ url_for('product_detail_gui', product_id=trial.ProductID) }}">{{ trial.product.ProductName }}</a></p>
+<p><strong>Trial Type:</strong> {{ trial.TrialType }}</p>
+<p><strong>Start Date:</strong> {{ trial.StartDate.strftime('%Y-%m-%d') }}</p>
+<p><strong>End Date:</strong> {{ trial.EndDate.strftime('%Y-%m-%d') if trial.EndDate else 'Ongoing' }}</p>
+
+
+<h4>Enrolled Patients</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Patient Name</th>
+            <th>Enrollment Date</th>
+            <th>Image Processing Job ID</th>
+            <th>Job Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for enrollment in trial.enrollments %}
+        <tr>
+            <td>{{ enrollment.patient.Name }}</td>
+            <td>{{ enrollment.DateEnrolled }}</td>
+            <td>{{ enrollment.ImageProcessingJobID }}</td>
+            <td>
+                {% if enrollment.ImageProcessingJobID %}
+                    <!-- Fetch job status using Kubernetes API -->
+                    {% set job_status = get_job_status(enrollment.ImageProcessingJobID) %}
+                    {{ job_status.state }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                {% if enrollment.ImageProcessingJobID %}
+                    <a href="{{ url_for('view_image_processing_job', job_id=enrollment.ImageProcessingJobID) }}" class="btn btn-primary btn-sm">View Job</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<h2>Enrollments</h2>
+<a href="{{ url_for('enroll_patient_gui', trial_id=trial.TrialID) }}" class="btn btn-primary">Enroll Patient</a>
+<ul>
+    {% for enrollment in trial.enrollments %}
+    <li>
+        <a href="{{ url_for('patient_detail_gui', patient_id=enrollment.patient.PatientID) }}">{{ enrollment.patient.Name }}</a> - Enrolled on {{ enrollment.DateEnrolled.strftime('%Y-%m-%d') }}
+    </li>
+    {% else %}
+    <p>No patients enrolled yet.</p>
+    {% endfor %}
+</ul>
+
+<h2>Actions</h2>
+<a href="{{ url_for('edit_trial_gui', trial_id=trial.TrialID) }}" class="btn btn-warning">Edit</a>
+<a href="{{ url_for('delete_trial_gui', trial_id=trial.TrialID) }}" class="btn btn-danger">Delete</a>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Enroll Patient in {{ trial.TrialName }}</h1>
+<form method="post">
+    <div class="form-group">
+        <label for="PatientID">Select Patient</label>
+        <select class="form-control" id="PatientID" name="PatientID" required>
+            {% for patient in patients %}
+            <option value="{{ patient.PatientID }}">{{ patient.Name }} (ID: {{ patient.PatientID }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Enroll</button>
+</form>
+{% endblock %}

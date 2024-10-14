@@ -9,7 +9,7 @@ metadata:
   name: operator-cluster-role
 rules:
   - apiGroups: ["darwinist.io"]
-    resources: ["imageprocessingjobs"]
+    resources: ["imageprocessingjobs", "imageprocessingjobs/status"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   - apiGroups: [""]
     resources: ["pods", "pods/log", "services", "endpoints", "persistentvolumeclaims", "events"]

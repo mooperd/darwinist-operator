@@ -1,0 +1,83 @@
+{
+    "ContactEmail": "rileytara@example.com",
+    "VendorID": "28fc7066-9fc5-4537-9b26-1eef29944db0",
+    "VendorName": "Evans LLC",
+    "Website": "https://ruiz.com/",
+    "products": [
+      {
+        "DICOMOutput": "themselves",
+        "Description": "Mouth career maintain. Data daughter fall truth. Short action never able.\r\nTurn drive consumer real fill look. Product local show look right upon. Collection break individual open front again thing.",
+        "PrePopulatedReports": false,
+        "ProductID": "93f00946-0ff8-4b22-a5b6-290e90fe64d5",
+        "ProductName": "Organic interactive solution",
+        "ResultsDisplayedInIDS7": false,
+        "WorklistIntegration": false,
+        "regulatory_approved_pathologies": [
+          {
+            "approval_date": "2024-09-21",
+            "approval_status": null,
+            "approved_by": "person",
+            "id": "791a6e1e-9f58-4608-ac73-41018aa448ae",
+            "name": "American"
+          },
+          {
+            "approval_date": "2024-09-29",
+            "approval_status": null,
+            "approved_by": "sdsd",
+            "id": "996985a2-9b63-42cc-bd9f-1c578e14baac",
+            "name": "campaign"
+          },
+          {
+            "approval_date": "2024-09-07",
+            "approval_status": null,
+            "approved_by": "andrew",
+            "id": "4b0fdf82-8f91-4544-8609-51e16b60b821",
+            "name": "turn"
+          }
+        ]
+      },
+      {
+        "DICOMOutput": "ground",
+        "Description": "Simply that play. Fund fear around to fear bar.\nStay pull skill moment country. Great nature bad tend so. Discuss newspaper happy wall nice star.",
+        "PrePopulatedReports": true,
+        "ProductID": "71bbc15d-032e-45c8-9cc1-0f03f51681f6",
+        "ProductName": "Virtual systemic task-force",
+        "ResultsDisplayedInIDS7": false,
+        "WorklistIntegration": false,
+        "regulatory_approved_pathologies": [
+          {
+            "approval_date": "2020-11-20",
+            "approval_status": "pending",
+            "approved_by": "Cobb-Gonzales",
+            "id": "9093b1e6-247b-47fe-9753-b1da13f6f74b",
+            "name": "hospital"
+          },
+          {
+            "approval_date": "2022-03-03",
+            "approval_status": "pending",
+            "approved_by": "Green, Hendricks and Hammond",
+            "id": "21c5f237-ddcd-447d-bc9b-36a589a88323",
+            "name": "dream"
+          }
+        ]
+      },
+      {
+        "DICOMOutput": "establish",
+        "Description": "Section family soon present across but run. Break nice say break easy right relate. Mind happy particular herself my here agent.",
+        "PrePopulatedReports": true,
+        "ProductID": "1230d6a1-b755-4d62-9f13-730e41d1d1c2",
+        "ProductName": "Pre-emptive actuating interface",
+        "ResultsDisplayedInIDS7": false,
+        "WorklistIntegration": false,
+        "regulatory_approved_pathologies": [
+          {
+            "approval_date": "2024-02-28",
+            "approval_status": "approved",
+            "approved_by": "Christian Inc",
+            "id": "f8cfa5be-6a98-402c-961f-d80c07cb23b3",
+            "name": "see"
+          }
+        ]
+      }
+    ]
+  }

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Product Details</h1>
+<h2>{{ product.ProductName }}</h2>
+<p><strong>Description:</strong> {{ product.Description }}</p>
+<p><strong>Vendor:</strong> <a href="{{ url_for('vendor_detail_gui', vendor_id=product.VendorID) }}">{{ product.vendor_.VendorName }}</a></p>
+<p><strong>Results Displayed In IDS7:</strong> {{ 'Yes' if product.ResultsDisplayedInIDS7 else 'No' }}</p>
+<p><strong>DICOM Output:</strong> {{ product.DICOMOutput }}</p>
+<p><strong>Worklist Integration:</strong> {{ 'Yes' if product.WorklistIntegration else 'No' }}</p>
+<p><strong>Pre-Populated Reports:</strong> {{ 'Yes' if product.PrePopulatedReports else 'No' }}</p>
+
+<h3>Regulatory Approved Pathologies</h3>
+<ul>
+    {% for approval in product.approvals %}
+    <li>
+        {{ approval.pathology_.PathologyName }} - Approved by {{ approval.ApprovedBy }} on {{ approval.ApprovalDate.strftime('%Y-%m-%d') }}
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('edit_product_gui', product_id=product.ProductID) }}" class="btn btn-warning">Edit</a>
+<a href="{{ url_for('delete_product_gui', product_id=product.ProductID) }}" class="btn btn-danger">Delete</a>
+{% endblock %}

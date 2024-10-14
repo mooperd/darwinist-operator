@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Clinical Trial Details - {{ trial.TrialName }}</h2>
+
+    <!-- Display trial details here -->
+
+    <!-- Button to launch ImageProcessingJobs -->
+    <form method="POST" action="{{ url_for('launch_image_processing_jobs', trial_id=trial.TrialID) }}">
+        <button type="submit" class="btn btn-primary">Launch Image Processing Jobs</button>
+    </form>
+
+    <!-- Enrolled Patients Table -->
+    <h3>Enrolled Patients</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Date Enrolled</th>
+                <th>Image Processing Job ID</th>
+                <th>Job Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for enrollment in trial.enrollments %}
+            <tr>
+                <td>{{ enrollment.patient.Name }}</td>
+                <td>{{ enrollment.DateEnrolled }}</td>
+                <td>{{ enrollment.ImageProcessingJobID or 'N/A' }}</td>
+                <td>
+                    {% if enrollment.ImageProcessingJobID %}
+                        {% set job_status = get_job_status(enrollment.ImageProcessingJobID) %}
+                        {{ job_status.state or 'Pending' }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if enrollment.ImageProcessingJobID %}
+                        <a href="{{ url_for('job_detail', name=enrollment.ImageProcessingJobID) }}" class="btn btn-primary btn-sm">View Job</a>
+                    {% else %}
+                        <!-- Optionally, add a button to launch job for this patient -->
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Back to Trials List -->
+    <a href="{{ url_for('list_trials_gui') }}" class="btn btn-secondary">Back to Trials List</a>
+</div>
+
+<h3>Enroll a Patient</h3>
+<form method="POST" action="{{ url_for('enroll_patient_gui', trial_id=trial.TrialID) }}">
+    <div class="form-group">
+        <label for="PatientID">Select Patient:</label>
+        <select name="PatientID" class="form-control" required>
+            <option value="">-- Select a Patient --</option>
+            {% for patient in patients %}
+                <option value="{{ patient.PatientID }}">{{ patient.Name }} (ID: {{ patient.PatientID }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Enroll Patient</button>
+</form>
+
+{% endblock %}

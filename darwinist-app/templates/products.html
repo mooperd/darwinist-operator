@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Products</h1>
+<a href="{{ url_for('add_product_gui') }}" class="btn btn-primary">Add New Product</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Vendor</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.ProductID }}</td>
+            <td>{{ product.ProductName }}</td>
+            <td>{{ product.vendor_.VendorName }}</td>
+            <td>
+                <a href="{{ url_for('product_detail_gui', product_id=product.ProductID) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('edit_product_gui', product_id=product.ProductID) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_product_gui', product_id=product.ProductID) }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

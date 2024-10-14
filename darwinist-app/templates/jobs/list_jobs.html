@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Image Processing Jobs</h2>
+    <form method="POST" action="{{ url_for('delete_jobs') }}">
+        {{ form.hidden_tag() }}  <!-- Include CSRF token if CSRF protection is enabled -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th> <!-- For checkboxes -->
+                    <th>Name</th>
+                    <th>Model Name</th>
+                    <th>S3 Input Location</th>
+                    <th>S3 Output Location</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="job_names" value="{{ job.metadata.name }}">
+                    </td>
+                    <td>
+                        <a href="{{ url_for('job_detail', name=job.metadata.name) }}">
+                            {{ job.metadata.name }}
+                        </a>
+                    </td>
+                    <td>{{ job.spec.model_name }}</td>
+                    <td>{{ job.spec.s3_input_location }}</td>
+                    <td>{{ job.spec.s3_output_location }}</td>
+                    <td>
+                        {% if job.status and 'state' in job.status %}
+                            {{ job.status.state }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if job.status and 'message' in job.status %}
+                            {{ job.status.message }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">No jobs found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-danger">Delete Selected Jobs</button>
+    </form>
+</div>
+{% endblock %}

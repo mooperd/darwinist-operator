@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Edit Clinical Trial</h1>
+<form method="post">
+    <div class="form-group">
+        <label for="TrialName">Trial Name</label>
+        <input type="text" class="form-control" id="TrialName" name="TrialName" value="{{ trial.TrialName }}" required>
+    </div>
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <textarea class="form-control" id="Description" name="Description">{{ trial.Description }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="ProductID">Product</label>
+        <select class="form-control" id="ProductID" name="ProductID" required>
+            {% for product in products %}
+            <option value="{{ product.ProductID }}" {% if product.ProductID == trial.ProductID %}selected{% endif %}>{{ product.ProductName }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="TrialType">Trial Type</label>
+        <select class="form-control" id="TrialType" name="TrialType" required>
+            <option value="formal" {% if trial.TrialType == 'formal' %}selected{% endif %}>Formal</option>
+            <option value="informal" {% if trial.TrialType == 'informal' %}selected{% endif %}>Informal</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="StartDate">Start Date</label>
+        <input type="date" class="form-control" id="StartDate" name="StartDate" value="{{ trial.StartDate.strftime('%Y-%m-%d') }}" required>
+    </div>
+    <div class="form-group">
+        <label for="EndDate">End Date</label>
+        <input type="date" class="form-control" id="EndDate" name="EndDate" value="{{ trial.EndDate.strftime('%Y-%m-%d') if trial.EndDate }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Update Trial</button>
+</form>
+{% endblock %}

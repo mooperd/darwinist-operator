@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Clinical Trial</h1>
+<p>Are you sure you want to delete the trial "{{ trial.TrialName }}"?</p>
+<form method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{{ url_for('trial_detail_gui', trial_id=trial.TrialID) }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

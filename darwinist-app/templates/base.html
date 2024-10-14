@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title if title else "Beagle" }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Required Bootstrap JS files -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('index_gui') }}">Beagle</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+
+                <!-- Vendor Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="vendorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Jobs
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="vendorDropdown">
+                        <a class="dropdown-item" href="{{ url_for('submit_job') }}">Submit Job</a>
+                        <a class="dropdown-item" href="{{ url_for('list_jobs') }}">List Jobs</a>
+                    </div>
+                </li>
+
+                <!-- Vendor Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="vendorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Vendors
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="vendorDropdown">
+                        <a class="dropdown-item" href="{{ url_for('list_vendors_gui') }}">List Vendors</a>
+                        {% if current_user.is_authenticated %}
+                        <a class="dropdown-item" href="{{ url_for('add_vendor_gui') }}">Add Vendor</a>
+                        {% endif %}
+                    </div>
+                </li>
+
+                <!-- Product Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="productDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Products
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="productDropdown">
+                        <a class="dropdown-item" href="{{ url_for('list_products_gui') }}">List Products</a>
+                    </div>
+                </li>
+
+                <!-- Clinical Trial Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="trialDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Clinical Trials
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="trialDropdown">
+                        <a class="dropdown-item" href="{{ url_for('list_trials_gui') }}">List Clinical Trials</a>
+                        {% if current_user.is_authenticated %}
+                        <a class="dropdown-item" href="{{ url_for('list_patients_gui') }}">List Patients</a>
+                        {% endif %}
+                    </div>
+                </li>
+
+            </ul>
+
+            <!-- User Widget -->
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <span class="navbar-text">Logged in as {{ current_user.Username }}</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+                {% else %}
+                <form class="form-inline" method="POST" action="{{ url_for('login') }}">
+                    <input class="form-control mr-sm-2" type="email" name="email" placeholder="Email" required>
+                    <input class="form-control mr-sm-2" type="password" name="password" placeholder="Password" required>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+                </form>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mt-4">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

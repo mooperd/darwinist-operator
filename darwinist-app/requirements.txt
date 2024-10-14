@@ -1,0 +1,8 @@
+Flask
+SQLAlchemy
+Flask-Login
+Werkzeug
+requests 
+faker
+markdown
+psycopg2-binary

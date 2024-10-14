@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Delete Vendor: {{ vendor.VendorName }}</h1>
+    <p>Are you sure you want to delete this vendor?</p>
+
+    <form method="POST">
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{{ url_for('vendor_detail_gui', vendor_id=vendor.VendorID) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

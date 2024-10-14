@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Product Details</h1>
+<h2>{{ product.ProductName }}</h2>
+<p><strong>Description:</strong> {{ product.Description }}</p>
+<p><strong>Vendor:</strong> <a href="{{ url_for('vendor_detail_gui', vendor_id=product.VendorID) }}">{{ product.vendor_.VendorName }}</a></p>
+<p><strong>Results Displayed In IDS7:</strong> {{ 'Yes' if product.ResultsDisplayedInIDS7 else 'No' }}</p>
+<p><strong>DICOM Output:</strong> {{ product.DICOMOutput }}</p>
+<p><strong>Worklist Integration:</strong> {{ 'Yes' if product.WorklistIntegration else 'No' }}</p>
+<p><strong>Pre-Populated Reports:</strong> {{ 'Yes' if product.PrePopulatedReports else 'No' }}</p>
+
+<h3>Regulatory Approved Pathologies</h3>
+
+<ul>
+    {% for approval in product.approvals %}
+    <li>
+        {{ approval.pathology_.PathologyName }} - Approved by {{ approval.ApprovedBy }} on {{ approval.ApprovalDate.strftime('%Y-%m-%d') }}
+        <form action="{{ url_for('remove_regulatory_approval', approval_id=approval.ApprovalID) }}" method="POST" style="display:inline-block;">
+            <input type="submit" value="Remove" class="btn btn-danger btn-sm">
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- Form to Add a Regulatory Approval -->
+<h4>Add Regulatory Approval</h4>
+<form action="{{ url_for('add_regulatory_approval', product_id=product.ProductID) }}" method="POST">
+    <div class="form-group">
+        <label for="pathology">Pathology:</label>
+        <select id="pathology" name="PathologyID" class="form-control">
+            {% for pathology in pathologies %}
+            <option value="{{ pathology.PathologyID }}">{{ pathology.PathologyName }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="approved_by">Approved By:</label>
+        <input type="text" id="approved_by" name="ApprovedBy" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="approval_date">Approval Date:</label>
+        <input type="date" id="approval_date" name="ApprovalDate" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Approval</button>
+</form>
+
+<a href="{{ url_for('edit_product_gui', product_id=product.ProductID) }}" class="btn btn-warning">Edit</a>
+<a href="{{ url_for('delete_product_gui', product_id=product.ProductID) }}" class="btn btn-danger">Delete</a>
+{% endblock %}

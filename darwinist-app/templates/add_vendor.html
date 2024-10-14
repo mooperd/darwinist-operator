@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Add a New Vendor</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label for="VendorID">Vendor ID</label>
+            <input type="text" class="form-control" id="VendorID" name="VendorID" required>
+        </div>
+        <div class="form-group">
+            <label for="VendorName">Vendor Name</label>
+            <input type="text" class="form-control" id="VendorName" name="VendorName" required>
+        </div>
+        <div class="form-group">
+            <label for="ContactEmail">Contact Email</label>
+            <input type="email" class="form-control" id="ContactEmail" name="ContactEmail" required>
+        </div>
+        <div class="form-group">
+            <label for="Website">Website</label>
+            <input type="url" class="form-control" id="Website" name="Website" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Vendor</button>
+    </form>
+{% endblock %}

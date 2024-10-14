@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Patient</h1>
+<p>Are you sure you want to delete the patient "{{ patient.Name }}"?</p>
+<form method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{{ url_for('patient_detail_gui', patient_id=patient.PatientID) }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

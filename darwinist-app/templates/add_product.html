@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Add New Product</h1>
+<form method="post">
+    <div class="form-group">
+        <label for="ProductID">Product ID</label>
+        <input type="text" class="form-control" id="ProductID" name="ProductID" required>
+    </div>
+    <div class="form-group">
+        <label for="ProductName">Product Name</label>
+        <input type="text" class="form-control" id="ProductName" name="ProductName" required>
+    </div>
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <textarea class="form-control" id="Description" name="Description"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="VendorID">Vendor</label>
+        <select class="form-control" id="VendorID" name="VendorID" required>
+            {% for vendor in vendors %}
+            <option value="{{ vendor.VendorID }}">{{ vendor.VendorName }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="ResultsDisplayedInIDS7" name="ResultsDisplayedInIDS7">
+        <label class="form-check-label" for="ResultsDisplayedInIDS7">Results Displayed In IDS7</label>
+    </div>
+    <div class="form-group">
+        <label for="DICOMOutput">DICOM Output</label>
+        <input type="text" class="form-control" id="DICOMOutput" name="DICOMOutput">
+    </div>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="WorklistIntegration" name="WorklistIntegration">
+        <label class="form-check-label" for="WorklistIntegration">Worklist Integration</label>
+    </div>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="PrePopulatedReports" name="PrePopulatedReports">
+        <label class="form-check-label" for="PrePopulatedReports">Pre-Populated Reports</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Product</button>
+</form>
+{% endblock %}

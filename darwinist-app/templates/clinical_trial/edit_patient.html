@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Edit Patient</h1>
+<form method="post">
+    <div class="form-group">
+        <label for="Name">Name</label>
+        <input type="text" class="form-control" id="Name" name="Name" value="{{ patient.Name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="Age">Age</label>
+        <input type="number" class="form-control" id="Age" name="Age" value="{{ patient.Age }}">
+    </div>
+    <div class="form-group">
+        <label for="Gender">Gender</label>
+        <select class="form-control" id="Gender" name="Gender" required>
+            <option value="Male" {% if patient.Gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if patient.Gender == 'Female' %}selected{% endif %}>Female</option>
+            <option value="Other" {% if patient.Gender == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="MedicalHistory">Medical History</label>
+        <textarea class="form-control" id="MedicalHistory" name="MedicalHistory">{{ patient.MedicalHistory }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Patient</button>
+</form>
+{% endblock %}

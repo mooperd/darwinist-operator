@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Vendors</h1>
+    <ul class="list-group mt-3">
+        {% for vendor in vendors %}
+        <li class="list-group-item">
+            <a href="{{ url_for('vendor_detail_gui', vendor_id=vendor.VendorID) }}">{{ vendor.VendorName }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

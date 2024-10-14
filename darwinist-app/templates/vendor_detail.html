@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ vendor.VendorName }}</h1>
+<p>Contact Email: {{ vendor.ContactEmail }}</p>
+<p>Website: <a href="{{ vendor.Website }}" target="_blank">{{ vendor.Website }}</a></p>
+
+<h2>Products</h2>
+<ul class="list-group">
+    {% for product in vendor.products %}
+    <li class="list-group-item">
+        <h3><a href="{{ url_for('product_detail_gui', product_id=product.ProductID) }}">{{ product.ProductName }}</a></h3>
+        <p>{{ product.Description }}</p>
+
+        <!-- Display regulatory approvals for each product -->
+        <h4>Regulatory Approvals:</h4>
+        <ul>
+            {% for approval in product.approvals %}
+            <li>
+                Pathology: {{ approval.pathology_.PathologyName }}<br>
+                Approval Status: {{ approval.ApprovalStatus }}<br>
+                Approved By: {{ approval.ApprovedBy }} on {{ approval.ApprovalDate.strftime('%Y-%m-%d') }}
+            </li>
+            {% else %}
+            <li>No regulatory approvals for this product.</li>
+            {% endfor %}
+        </ul>
+
+    </li>
+    {% else %}
+    <li class="list-group-item">No products available for this vendor.</li>
+    {% endfor %}
+</ul>
+
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('edit_vendor_gui', vendor_id=vendor.VendorID) }}" class="btn btn-primary mt-3">Edit Vendor</a>
+<a href="{{ url_for('delete_vendor_gui', vendor_id=vendor.VendorID) }}" class="btn btn-danger mt-3">Delete Vendor</a>
+{% endif %}
+{% endblock %}

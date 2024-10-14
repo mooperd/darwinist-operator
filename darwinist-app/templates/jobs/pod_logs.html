@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Logs for Pod {{ pod_name }}</h2>
+    <pre style="background-color: #f8f9fa; padding: 15px; border: 1px solid #dee2e6; border-radius: 5px;">
+{{ logs }}
+    </pre>
+    <a href="{{ request.referrer or url_for('list_jobs') }}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

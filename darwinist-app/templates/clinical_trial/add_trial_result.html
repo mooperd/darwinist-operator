@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Add Trial Result</h1>
+<p>Patient: {{ enrollment.patient.Name }} (ID: {{ enrollment.patient.PatientID }})</p>
+<p>Trial: {{ enrollment.trial.TrialName }}</p>
+<form method="post">
+    <div class="form-group">
+        <label for="Outcome">Outcome</label>
+        <input type="text" class="form-control" id="Outcome" name="Outcome" required>
+    </div>
+    <div class="form-group">
+        <label for="AdditionalData">Additional Data</label>
+        <textarea class="form-control" id="AdditionalData" name="AdditionalData"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Result</button>
+</form>
+{% endblock %}

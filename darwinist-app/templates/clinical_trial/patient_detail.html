@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ patient.Name }}</h1>
+<p><strong>Age:</strong> {{ patient.Age }}</p>
+<p><strong>Gender:</strong> {{ patient.Gender }}</p>
+<p><strong>Longitudinal Patient Data:</strong> {{ patient.MedicalHistory | safe }}</p>
+
+<h2>Enrollments</h2>
+<ul>
+    {% for enrollment in patient.enrollments %}
+    <li>
+        Enrolled in <a href="{{ url_for('trial_detail_gui', trial_id=enrollment.trial.TrialID) }}">{{ enrollment.trial.TrialName }}</a> on {{ enrollment.DateEnrolled.strftime('%Y-%m-%d') }}
+    </li>
+    {% else %}
+    <p>No enrollments yet.</p>
+    {% endfor %}
+</ul>
+
+<h2>Actions</h2>
+<a href="{{ url_for('edit_patient_gui', patient_id=patient.PatientID) }}" class="btn btn-warning">Edit</a>
+<a href="{{ url_for('delete_patient_gui', patient_id=patient.PatientID) }}" class="btn btn-danger">Delete</a>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Job Details - {{ job.metadata.name }}</h2>
+
+    <h4>Image Processing Job Details</h4>
+    <table class="table table-bordered">
+        <tr>
+            <th>Name</th>
+            <td>{{ job.metadata.name }}</td>
+        </tr>
+        <tr>
+            <th>Model Name</th>
+            <td>{{ job.spec.model_name }}</td>
+        </tr>
+        <tr>
+            <th>S3 Input Location</th>
+            <td>{{ job.spec.s3_input_location }}</td>
+        </tr>
+        <tr>
+            <th>S3 Output Location</th>
+            <td>{{ job.spec.s3_output_location }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                {% if job.status and 'state' in job.status %}
+                    {{ job.status.state }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Message</th>
+            <td>
+                {% if job.status and 'message' in job.status %}
+                    {{ job.status.message }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <h4>Kubernetes Job Details</h4>
+    {% if k8s_job %}
+    <table class="table table-bordered">
+        <tr>
+            <th>Name</th>
+            <td>{{ k8s_job.metadata.name }}</td>
+        </tr>
+        <tr>
+            <th>Creation Timestamp</th>
+            <td>{{ k8s_job.metadata.creation_timestamp }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                {% if k8s_job.status.conditions %}
+                    {% for condition in k8s_job.status.conditions %}
+                        {{ condition.type }}: {{ condition.status }}<br>
+                    {% endfor %}
+                {% else %}
+                    No conditions
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    {% else %}
+        <p>Kubernetes Job not found.</p>
+    {% endif %}
+
+    <h4>Pods</h4>
+    {% if pods %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Node</th>
+                <th>Containers</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pod in pods %}
+            <tr>
+                <td>{{ pod.metadata.name }}</td>
+                <td>{{ pod.status.phase }}</td>
+                <td>{{ pod.spec.node_name }}</td>
+                <td>
+                    {% for container in pod.spec.containers %}
+                        {{ container.name }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No pods found for this job.</p>
+    {% endif %}
+
+    <a href="{{ url_for('list_jobs') }}" class="btn btn-secondary">Back to Job List</a>
+</div>
+{% endblock %}
