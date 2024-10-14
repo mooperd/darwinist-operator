@@ -107,19 +107,18 @@ def on_delete(spec, name, namespace, logger, **kwargs):
 #TODO: Impliment this function to update job status
 
 
-
-@kopf.on.update('imageprocessingjobs')
-def on_update(spec, status, name, namespace, logger, patch, **kwargs):
-    logger.info(f"Updating status for ImageProcessingJob {name} in namespace {namespace}")
-    
-    # Define the job name based on the ImageProcessingJob name
+# Timer to periodically check the status of jobs owned by the ImageProcessingJob
+@kopf.timer('imageprocessingjobs', interval=60.0)  # Check every 60 seconds
+def check_job_status(spec, status, name, namespace, logger, patch, **kwargs):
+    namespace = "darwinist"  # TODO: Fix hardcoded namespace if needed
     job_name = f"ipj-{name}"
 
-    # Fetch the Job status from Kubernetes
     batch_v1 = kubernetes.client.BatchV1Api()
+    
     try:
+        # Fetch the job associated with this ImageProcessingJob
         job = batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
-        
+
         # Extract job conditions
         job_conditions = job.status.conditions if job.status.conditions else []
 
@@ -150,4 +149,5 @@ def on_update(spec, status, name, namespace, logger, patch, **kwargs):
 
     except ApiException as e:
         logger.error(f"Exception when reading Job status: {e}")
-        raise kopf.TemporaryError(f"Failed to fetch Job {job_name} status", delay=30)
+        patch.status['state'] = 'Unknown'
+        patch.status['message'] = f'Failed to fetch status of job {job_name}.'
