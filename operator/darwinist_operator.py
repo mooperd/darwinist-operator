@@ -109,6 +109,7 @@ def on_delete(spec, name, namespace, logger, **kwargs):
 
 @kopf.on.update('batch/v1', 'jobs')  # Track updates to all jobs
 def on_job_update(namespace, name, status, labels, logger, **kwargs):
+    logger.info(f"Job {name} updated in namespace {namespace}. Checking for completion or failure.")
     # Check if the job is one of the image processing jobs
     if 'job-name' in labels and labels['job-name'].startswith("ipj-"):
         job_name = labels['job-name']
@@ -127,6 +128,7 @@ def on_job_update(namespace, name, status, labels, logger, **kwargs):
                 update_imageprocessingjob_status(job_name, namespace, 'Failed', logger)
 
 def update_imageprocessingjob_status(job_name, namespace, state, logger):
+    namespace="darwinist"
     # Extract the ImageProcessingJob name from the job name
     imageprocessingjob_name = job_name.replace('ipj-', '')
 
