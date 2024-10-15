@@ -3,7 +3,7 @@ import model
 
 if __name__ == '__main__':
     # Initialize the database engine
-    engine = model.create_engine('sqlite:///clinical_ai_products.db', echo=True)
+    engine = model.create_engine('postgresql+psycopg2://user:password@hostname/database_name', echo=True)
     model.create_all()
     
     # Create a scoped session

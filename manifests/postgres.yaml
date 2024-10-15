@@ -47,6 +47,16 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgresdata
+        - name: phppgadmin
+          image: dockage/phppgadmin:latest
+          ports:
+            - name: web-access
+              containerPort: 80
+          env:
+            - name: PHP_PG_ADMIN_SERVER_DESC
+              value: "Kittens are awesome"
+            - name: PHP_PG_ADMIN_SERVER_HOST
+              value: "localhost"
       volumes:
         - name: postgresdata
           persistentVolumeClaim:
