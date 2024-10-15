@@ -29,9 +29,10 @@ def trial_detail_gui(trial_id):
             joinedload(ClinicalTrial.product),
             joinedload(ClinicalTrial.enrollments).joinedload(TrialEnrollment.patient)
         ).filter_by(TrialID=trial_id).first()
+        patients = session.query(Patient).all()
         if not trial:
             abort(404, description="Clinical trial not found")
-        return render_template('clinical_trial/trial_detail.html', trial=trial)
+        return render_template('clinical_trial/trial_detail.html', trial=trial, patients=patients)
     except Exception as e:
         abort(500, description=str(e))
 

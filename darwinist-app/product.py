@@ -333,7 +333,7 @@ def add_vendor_gui():
 
 ## Edit Vendor GUI endpoint
 @app.route('/gui/edit_vendor/<vendor_id>', methods=['GET', 'POST'])
-@login_required
+
 def edit_vendor_gui(vendor_id):
     session = Session
     try:
@@ -401,7 +401,7 @@ def product_detail_gui(product_id):
 
 # Add Products
 @app.route('/add_product', methods=['GET', 'POST'])
-@login_required
+
 def add_product_gui():
     session = Session
     try:

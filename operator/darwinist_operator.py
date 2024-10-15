@@ -85,6 +85,7 @@ def on_create(spec, name, namespace, logger, patch, **kwargs):
         logger.error(f"Exception when creating Job: {e}")
         raise kopf.TemporaryError(f"Failed to create Job {job_name}", delay=30)
 
+
 @kopf.on.delete('imageprocessingjobs')
 def on_delete(spec, name, namespace, logger, **kwargs):
     logger.info(f"Cleaning up resources for ImageProcessingJob {name}")
@@ -109,6 +110,7 @@ def on_delete(spec, name, namespace, logger, **kwargs):
 
 @kopf.on.update('batch/v1', 'jobs')  # Track updates to all jobs
 def on_job_update(namespace, name, status, labels, logger, **kwargs):
+    namespace="darwinist"
     logger.info(f"Job {name} updated in namespace {namespace}. Checking for completion or failure.")
     # Check if the job is one of the image processing jobs
     if 'job-name' in labels and labels['job-name'].startswith("ipj-"):
@@ -126,6 +128,7 @@ def on_job_update(namespace, name, status, labels, logger, **kwargs):
                 logger.error(f"Job {job_name} failed.")
                 # Here you would patch the associated ImageProcessingJob's status
                 update_imageprocessingjob_status(job_name, namespace, 'Failed', logger)
+
 
 def update_imageprocessingjob_status(job_name, namespace, state, logger):
     namespace="darwinist"
