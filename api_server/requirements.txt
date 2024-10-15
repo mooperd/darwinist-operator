@@ -1,6 +1,0 @@
-kopf 
-kubernetes 
-boto3
-fastapi
-uvicorn
-kubernetes
