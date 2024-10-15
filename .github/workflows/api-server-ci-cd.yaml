@@ -20,10 +20,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Push Docker Image
-        working-directory: api_server
+        working-directory: flask-app
         env:
           # IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/your_api_server_image
-          IMAGE_NAME: darwinist/operator_api_server
+          IMAGE_NAME: darwinist/app
           IMAGE_TAG: ${{ github.sha }}
         run: |
           ls

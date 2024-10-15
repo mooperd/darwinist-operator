@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Push Docker Image
-        working-directory: operator
+        working-directory: kopf-operator
         env:
           IMAGE_NAME: darwinist/operator
           IMAGE_TAG: ${{ github.sha }}
