@@ -5,7 +5,7 @@
     <ul class="list-group mt-3">
         {% for vendor in vendors %}
         <li class="list-group-item">
-            <a href="{{ url_for('vendor_detail_gui', vendor_id=vendor.VendorID) }}">{{ vendor.VendorName }}</a>
+            <a href="{{ url_for('vendor_detail_gui', vendor_id=vendor.vendor_id) }}">{{ vendor.vendor_name }}</a>
         </li>
         {% endfor %}
     </ul>

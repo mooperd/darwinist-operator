@@ -4,10 +4,10 @@
 <h1>Enroll Patient in {{ trial.TrialName }}</h1>
 <form method="post">
     <div class="form-group">
-        <label for="PatientID">Select Patient</label>
-        <select class="form-control" id="PatientID" name="PatientID" required>
+        <label for="patient_id">Select Patient</label>
+        <select class="form-control" id="patient_id" name="patient_id" required>
             {% for patient in patients %}
-            <option value="{{ patient.PatientID }}">{{ patient.Name }} (ID: {{ patient.PatientID }})</option>
+            <option value="{{ patient.patient_id }}">{{ patient.Name }} (ID: {{ patient.patient_id }})</option>
             {% endfor %}
         </select>
     </div>

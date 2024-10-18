@@ -29,14 +29,14 @@ def create_random_patient():
         "Name": faker.name(),
         "Age": random.randint(18, 85),
         "Gender": random.choice(['Male', 'Female', 'Other']),
-        "MedicalHistory": faker.text(),
+        "medical_history": faker.text(),
     }
     return patient_data
 
 # Helper function to enroll a patient in a trial
 def create_random_enrollment(trial_id, patient_id):
     enrollment_data = {
-        "PatientID": patient_id
+        "patient_id": patient_id
     }
     return enrollment_data
 
@@ -54,7 +54,7 @@ def inject_clinical_trials(product_id, num_trials=5):
         trial_data = create_random_clinical_trial(product_id)
         response = requests.post(f"{BASE_URL}/trials", json=trial_data)
         if response.status_code == 201:
-            trial_id = response.json().get("TrialID")
+            trial_id = response.json().get("trial_id")
             print(f"Successfully created trial with ID: {trial_id}")
         else:
             print(f"Failed to create trial: {response.status_code}, {response.text}")
@@ -66,7 +66,7 @@ def inject_patients(num_patients=10):
         patient_data = create_random_patient()
         response = requests.post(f"{BASE_URL}/patients", json=patient_data)
         if response.status_code == 201:
-            patient_id = response.json().get("PatientID")
+            patient_id = response.json().get("patient_id")
             patient_ids.append(patient_id)
             print(f"Successfully created patient with ID: {patient_id}")
         else:

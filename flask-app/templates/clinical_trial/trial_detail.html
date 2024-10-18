@@ -7,7 +7,7 @@
     <!-- Display trial details here -->
 
     <!-- Button to launch ImageProcessingJobs -->
-    <form method="POST" action="{{ url_for('launch_image_processing_jobs', trial_id=trial.TrialID) }}">
+    <form method="POST" action="{{ url_for('launch_image_processing_jobs', trial_id=trial.trial_id) }}">
         <button type="submit" class="btn btn-primary">Launch Image Processing Jobs</button>
     </form>
 
@@ -26,8 +26,8 @@
         <tbody>
             {% for enrollment in trial.enrollments %}
             <tr>
-                <td>{{ enrollment.patient.Name }}</td>
-                <td>{{ enrollment.DateEnrolled }}</td>
+                <td>{{ enrollment.patient.name }}</td>
+                <td>{{ enrollment.date_enrolled }}</td>
                 <td>{{ enrollment.ImageProcessingJobID or 'N/A' }}</td>
                 <td>
                     {% if enrollment.ImageProcessingJobID %}
@@ -54,13 +54,13 @@
 </div>
 
 <h3>Enroll a Patient</h3>
-<form method="POST" action="{{ url_for('enroll_patient_gui', trial_id=trial.TrialID) }}">
+<form method="POST" action="{{ url_for('enroll_patient_gui', trial_id=trial.trial_id) }}">
     <div class="form-group">
-        <label for="PatientID">Select Patient:</label>
-        <select name="PatientID" class="form-control" required>
+        <label for="patient_id">Select Patient:</label>
+        <select name="patient_id" class="form-control" required>
             <option value="">-- Select a Patient --</option>
             {% for patient in patients %}
-                <option value="{{ patient.PatientID }}">{{ patient.Name }} (ID: {{ patient.PatientID }})</option>
+                <option value="{{ patient.patient_id }}">{{ patient.Name }} (ID: {{ patient.patient_id }})</option>
             {% endfor %}
         </select>
     </div>

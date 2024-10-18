@@ -76,7 +76,7 @@ def launch_image_processing_jobs(trial_id):
         trial = session.query(ClinicalTrial).options(
             joinedload(ClinicalTrial.product),
             joinedload(ClinicalTrial.enrollments).joinedload(TrialEnrollment.patient)
-        ).filter_by(TrialID=trial_id).first()
+        ).filter_by(trial_id=trial_id).first()
 
         if not trial:
             abort(404, description="Clinical trial not found")
@@ -92,16 +92,16 @@ def launch_image_processing_jobs(trial_id):
         plural = 'imageprocessingjobs'
 
         for enrollment in trial.enrollments:
-            if enrollment.ImageProcessingJobID:
+            if enrollment.image_processing_job_id:
                 # Job already exists for this enrollment
                 continue
 
-            patient_id = enrollment.PatientID
+            patient_id = enrollment.patient_id
             patient = enrollment.patient
 
             # Prepare job details
             s3_input_location = f"s3://input-data/patient-{patient_id}"
-            model_name = trial.product.ProductName  # Assuming model_name is the product name
+            model_name = trial.product.product_name  # Assuming model_name is the product name
             s3_output_location = f"s3://output-data/trial-{trial_id}/patient-{patient_id}"
 
             # Generate a unique name for the ImageProcessingJob
@@ -130,7 +130,7 @@ def launch_image_processing_jobs(trial_id):
                     body=body,
                 )
                 # Store the job ID in the enrollment
-                enrollment.ImageProcessingJobID = resource_name
+                enrollment.image_processing_job_id = resource_name
                 session.commit()
             except client.rest.ApiException as e:
                 session.rollback()
@@ -148,6 +148,68 @@ def launch_image_processing_jobs(trial_id):
         session.close()
 
 
+
+@app.route("/list_jobs", methods=['GET'])
+def list_jobs():
+    form = ImageProcessingForm()
+    api_instance = client.CustomObjectsApi()
+    group = 'darwinist.io'
+    version = 'v1'
+    namespace = 'darwinist'  # Change this if necessary
+    plural = 'imageprocessingjobs'
+    session = Session()
+
+    try:
+        # Get the list of ImageProcessingJob resources from Kubernetes
+        jobs = api_instance.list_namespaced_custom_object(
+            group=group,
+            version=version,
+            namespace=namespace,
+            plural=plural,
+        )
+        job_list = jobs.get('items', [])
+        
+        # Dictionary to store job-clinical trial and patient associations
+        job_trial_mapping = {}
+        
+        # Loop through each job and retrieve associated clinical trial and patient
+        for job in job_list:
+            job_id = job['metadata']['name']
+
+            # Query the TrialEnrollment to find the entry with this image_processing_job_id
+            enrollment = session.query(TrialEnrollment).filter_by(image_processing_job_id=job_id).first()
+            
+            if enrollment and enrollment.trial:
+                # Get the trial and patient information
+                trial_name = enrollment.trial.trial_name
+                trial_id = enrollment.trial.trial_id
+                patient_name = enrollment.patient.name
+                patient_id = enrollment.patient.patient_id
+
+                # Map job name to trial name, patient name, and trial id
+                job_trial_mapping[job_id] = {
+                    'trial_name': trial_name,
+                    'trial_id': trial_id,
+                    'patient_name': patient_name,
+                    'patient_id': patient_id
+                }
+            else:
+                job_trial_mapping[job_id] = {
+                    'trial_name': 'N/A',
+                    'trial_id': None,
+                    'patient_name': 'N/A',
+                    'patient_id': None
+                }
+
+        return render_template('jobs/list_jobs.html', jobs=job_list, form=form, job_trial_mapping=job_trial_mapping)
+    except client.rest.ApiException as e:
+        flash(f'Error retrieving jobs: {str(e)}', 'danger')
+        return redirect(url_for('index'))
+    finally:
+        session.close()
+
+
+"""
 @app.route("/list_jobs", methods=['GET'])
 def list_jobs():
     form = ImageProcessingForm()
@@ -171,6 +233,7 @@ def list_jobs():
     except client.rest.ApiException as e:
         flash(f'Error retrieving jobs: {str(e)}', 'danger')
         return redirect(url_for('index'))
+"""
 
 
 @app.route("/job/<name>", methods=['GET'])
@@ -262,49 +325,3 @@ def view_pod_logs(namespace, pod_name):
     return render_template('jobs/pod_logs.html', pod_name=pod_name, namespace=namespace, logs=logs)
 
 
-# API endpoint for handling the same request
-@app.route("/api/process-image", methods=['POST'])
-def process_image():
-    data = request.json
-    s3_input_location = data.get("s3_input_location")
-    model_name = data.get("model_name")
-    s3_output_location = data.get("s3_output_location")
-
-    if not s3_input_location or not model_name or not s3_output_location:
-        return jsonify({"error": "Missing required fields"}), 400
-
-    api_instance = client.CustomObjectsApi()
-    group = 'darwinist.io'
-    version = 'v1'
-    namespace = 'darwinist'  # Change if needed
-    plural = 'imageprocessingjobs'
-
-    # Generate a unique name for the custom resource
-    resource_name = f"ipj-{uuid.uuid4().hex[:6]}"
-
-    body = {
-        'apiVersion': f'{group}/{version}',
-        'kind': 'ImageProcessingJob',
-        'metadata': {
-            'name': resource_name,
-        },
-        'spec': {
-            's3_input_location': s3_input_location,
-            'model_name': model_name,
-            's3_output_location': s3_output_location,
-        }
-    }
-
-    try:
-        api_instance.create_namespaced_custom_object(
-            group=group,
-            version=version,
-            namespace=namespace,
-            plural=plural,
-            body=body,
-        )
-        print(resource_name)
-        return jsonify({"message": "Image processing job created.", "job_name": resource_name})
-    except client.rest.ApiException as e:
-        print(resource_name)
-        return jsonify({"error": str(e)}), 500

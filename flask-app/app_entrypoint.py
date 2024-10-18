@@ -1,11 +1,13 @@
 from app import app
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
-import product
-import clinical_trial
 from flask import Flask, request, jsonify, abort, render_template, redirect, url_for, flash
 import secrets
 import model
 import jobs
+import approval
+import trial
+import product
+import user
 
 if __name__ == '__main__':
     # Initialize the database engine

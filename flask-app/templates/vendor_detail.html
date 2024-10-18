@@ -9,7 +9,7 @@
 <ul class="list-group">
     {% for product in vendor.products %}
     <li class="list-group-item">
-        <h3><a href="{{ url_for('product_detail_gui', product_id=product.ProductID) }}">{{ product.ProductName }}</a></h3>
+        <h3><a href="{{ url_for('product_detail_gui', product_id=product.ProductID) }}">{{ product.product_name }}</a></h3>
         <p>{{ product.Description }}</p>
 
         <!-- Display regulatory approvals for each product -->

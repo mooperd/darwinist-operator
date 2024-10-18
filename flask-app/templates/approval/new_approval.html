@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Create New Approval</h1>
+    
+    <!-- Flash messages for success/error -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST" action="{{ url_for('new_approval') }}">
+        <label for="approval_date">Approval Date:</label>
+        <input type="date" id="approval_date" name="approval_date" required><br>
+
+        <label for="approval_status">Approval Status:</label>
+        <input type="checkbox" id="approval_status" name="approval_status"><br>
+
+        <label for="id_code">ID Code:</label>
+        <input type="text" id="id_code" name="id_code" required><br>
+
+        <label for="product_id">Product:</label>
+        <select name="product_id">
+            {% for product in products %}
+            <option value="{{ product.product_id }}">{{ product.product_name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="pathology_id">Pathology:</label>
+        <select name="pathology_id">
+            {% for pathology in pathologies %}
+            <option value="{{ pathology.pathology_id }}">{{ pathology.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="modality_id">Modality:</label>
+        <select name="modality_id">
+            {% for modality in modalities %}
+            <option value="{{ modality.modality_id }}">{{ modality.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="body_part_id">Body Part:</label>
+        <select name="body_part_id">
+            {% for body_part in body_parts %}
+            <option value="{{ body_part.body_part_id }}">{{ body_part.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="regulatory_body_id">Regulatory Body:</label>
+        <select name="regulatory_body_id">
+            {% for regulatory_body in regulatory_bodies %}
+            <option value="{{ regulatory_body.regulatory_body_id }}">{{ regulatory_body.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <button type="submit">Create Approval</button>
+    </form>
+    
+    <a href="{{ url_for('index') }}">Back to Approval List</a>
+</body>
+</html>
+{% endblock %}

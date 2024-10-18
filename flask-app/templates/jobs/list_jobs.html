@@ -15,6 +15,8 @@
                     <th>S3 Output Location</th>
                     <th>Status</th>
                     <th>Message</th>
+                    <th>Clinical Trial</th>
+                    <th>Patient</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +43,24 @@
                     <td>
                         {% if job.status and 'message' in job.status %}
                             {{ job.status.message }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if job_trial_mapping[job.metadata.name].patient_id %}
+                        <a href="{{ url_for('patient_detail_gui', patient_id=job_trial_mapping[job.metadata.name].patient_id) }}"></a>
+                            {{ job_trial_mapping[job.metadata.name].patient_name }} <!-- Display patient name -->
+                        </a>
+                        {% else %}
+                           N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if job_trial_mapping[job.metadata.name].trial_id %}
+                        <a href="{{ url_for('trial_detail_gui', trial_id=job_trial_mapping[job.metadata.name].trial_id) }}">
+                            {{ job_trial_mapping[job.metadata.name].trial_name }}  <!-- Display trial name -->
+                        </a>
                         {% else %}
                             N/A
                         {% endif %}

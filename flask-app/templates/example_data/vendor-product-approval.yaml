@@ -4,7 +4,7 @@ VendorID: 28fc7066-9fc5-4537-9b26-1eef29944db0
 VendorName: Evans LLC
 Website: https://ruiz.com/
 products:
-- ProductName: Organic interactive solution
+- product_name: Organic interactive solution
   DICOMOutput: themselves
   Description: |- 
     Mouth career maintain. Data daughter fall truth. 
@@ -39,7 +39,7 @@ products:
     You can type normally here, blah blah etc.
   PrePopulatedReports: true
   ProductID: 71bbc15d-032e-45c8-9cc1-0f03f51681f6
-  ProductName: Virtual systemic task-force
+  product_name: Virtual systemic task-force
   ResultsDisplayedInIDS7: false
   WorklistIntegration: false
   regulatory_approved_pathologies:
@@ -58,7 +58,7 @@ products:
     right relate. Mind happy particular herself my here agent.
   PrePopulatedReports: true
   ProductID: 1230d6a1-b755-4d62-9f13-730e41d1d1c2
-  ProductName: Pre-emptive actuating interface
+  product_name: Pre-emptive actuating interface
   ResultsDisplayedInIDS7: false
   WorklistIntegration: false
   regulatory_approved_pathologies:

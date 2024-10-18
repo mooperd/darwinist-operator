@@ -16,14 +16,14 @@
     <tbody>
         {% for patient in patients %}
         <tr>
-            <td>{{ patient.PatientID }}</td>
-            <td>{{ patient.Name }}</td>
-            <td>{{ patient.Age }}</td>
-            <td>{{ patient.Gender }}</td>
+            <td>{{ patient.patient_id }}</td>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.gender }}</td>
             <td>
-                <a href="{{ url_for('patient_detail_gui', patient_id=patient.PatientID) }}" class="btn btn-info">View</a>
-                <a href="{{ url_for('edit_patient_gui', patient_id=patient.PatientID) }}" class="btn btn-warning">Edit</a>
-                <a href="{{ url_for('delete_patient_gui', patient_id=patient.PatientID) }}" class="btn btn-danger">Delete</a>
+                <a href="{{ url_for('patient_detail_gui', patient_id=patient.patient_id) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('edit_patient_gui', patient_id=patient.patient_id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_patient_gui', patient_id=patient.patient_id) }}" class="btn btn-danger">Delete</a>
             </td>
         </tr>
         {% endfor %}

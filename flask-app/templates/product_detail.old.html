@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Product Details</h1>
-<h2>{{ product.ProductName }}</h2>
+<h2>{{ product.product_name }}</h2>
 <p><strong>Description:</strong> {{ product.Description }}</p>
 <p><strong>Vendor:</strong> <a href="{{ url_for('vendor_detail_gui', vendor_id=product.VendorID) }}">{{ product.vendor_.VendorName }}</a></p>
 <p><strong>Results Displayed In IDS7:</strong> {{ 'Yes' if product.ResultsDisplayedInIDS7 else 'No' }}</p>

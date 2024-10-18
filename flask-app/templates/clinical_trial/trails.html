@@ -17,15 +17,15 @@
     <tbody>
         {% for trial in trials %}
         <tr>
-            <td>{{ trial.TrialID }}</td>
-            <td>{{ trial.TrialName }}</td>
-            <td>{{ trial.product.ProductName }}</td>
-            <td>{{ trial.TrialType }}</td>
-            <td>{{ trial.StartDate.strftime('%Y-%m-%d') }}</td>
+            <td>{{ trial.trial_id }}</td>
+            <td>{{ trial.trail_name }}</td>
+            <td>{{ trial.product.product_name }}</td>
+            <td>{{ trial.trial_type }}</td>
+            <td>{{ trial.start_date.strftime('%Y-%m-%d') }}</td>
             <td>
-                <a href="{{ url_for('trial_detail_gui', trial_id=trial.TrialID) }}" class="btn btn-info">View</a>
-                <a href="{{ url_for('edit_trial_gui', trial_id=trial.TrialID) }}" class="btn btn-warning">Edit</a>
-                <a href="{{ url_for('delete_trial_gui', trial_id=trial.TrialID) }}" class="btn btn-danger">Delete</a>
+                <a href="{{ url_for('trial_detail_gui', trial_id=trial.trial_id) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('edit_trial_gui', trial_id=trial.trial_id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_trial_gui', trial_id=trial.trial_id) }}" class="btn btn-danger">Delete</a>
             </td>
         </tr>
         {% endfor %}
