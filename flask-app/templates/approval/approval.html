@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Approvals</h1>
+    <a href="{{ url_for('new_approval') }}">Create New Approval</a>
+
+    <!-- Filter dropdowns -->
+    <div class="filters">
+        <label for="filterProduct">Product:</label>
+        <select id="filterProduct" onchange="filterTable()">
+            <option value="">All</option>
+            {% set products = approvals|map(attribute='product.product_name')|list %}
+            {% for product in products|unique %}
+            <option value="{{ product }}">{{ product }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="filterPathology">Pathology:</label>
+        <select id="filterPathology" onchange="filterTable()">
+            <option value="">All</option>
+            {% set pathologies = approvals|map(attribute='pathology.name')|list %}
+            {% for pathology in pathologies|unique %}
+            <option value="{{ pathology }}">{{ pathology }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="filterModality">Modality:</label>
+        <select id="filterModality" onchange="filterTable()">
+            <option value="">All</option>
+            {% set modalities = approvals|map(attribute='modality.name')|list %}
+            {% for modality in modalities|unique %}
+            <option value="{{ modality }}">{{ modality }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="filterBodyPart">Body Part:</label>
+        <select id="filterBodyPart" onchange="filterTable()">
+            <option value="">All</option>
+            {% set body_parts = approvals|map(attribute='body_part.name')|list %}
+            {% for body_part in body_parts|unique %}
+            <option value="{{ body_part }}">{{ body_part }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="filterRegulatoryBody">Regulatory Body:</label>
+        <select id="filterRegulatoryBody" onchange="filterTable()">
+            <option value="">All</option>
+            {% set regulatory_bodies = approvals|map(attribute='regulatory_body.name')|list %}
+            {% for regulatory_body in regulatory_bodies|unique %}
+            <option value="{{ regulatory_body }}">{{ regulatory_body }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+
+    <!-- Table to display approvals -->
+    <table id="approvalsTable" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Approval Date</th>
+                <th>Status</th>
+                <th>ID Code</th>
+                <th>Product</th>
+                <th>Pathology</th>
+                <th>Modality</th>
+                <th>Body Part</th>
+                <th>Regulatory Body</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for approval in approvals %}
+            <tr>
+                <td>{{ approval.approval_id }}</td>
+                <td>{{ approval.approval_date }}</td>
+                <td>{{ approval.approval_status }}</td>
+                <td>{{ approval.id_code }}</td>
+                <td>{{ approval.product.product_name }}</td>
+                <td>{{ approval.pathology.name }}</td>
+                <td>{{ approval.modality.name }}</td>
+                <td>{{ approval.body_part.name }}</td>
+                <td>{{ approval.regulatory_body.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function filterTable() {
+    // Get filter values
+    var productFilter = document.getElementById('filterProduct').value.toLowerCase();
+    var pathologyFilter = document.getElementById('filterPathology').value.toLowerCase();
+    var modalityFilter = document.getElementById('filterModality').value.toLowerCase();
+    var bodyPartFilter = document.getElementById('filterBodyPart').value.toLowerCase();
+    var regulatoryBodyFilter = document.getElementById('filterRegulatoryBody').value.toLowerCase();
+
+    // Get table rows
+    var table = document.getElementById('approvalsTable');
+    var tr = table.getElementsByTagName('tr');
+
+    // Loop through all table rows, and hide those that don't match the filters
+    for (var i = 1; i < tr.length; i++) {
+        var tdProduct = tr[i].getElementsByTagName('td')[4].textContent.toLowerCase();
+        var tdPathology = tr[i].getElementsByTagName('td')[5].textContent.toLowerCase();
+        var tdModality = tr[i].getElementsByTagName('td')[6].textContent.toLowerCase();
+        var tdBodyPart = tr[i].getElementsByTagName('td')[7].textContent.toLowerCase();
+        var tdRegulatoryBody = tr[i].getElementsByTagName('td')[8].textContent.toLowerCase();
+
+        // Check if the row matches the filter values
+        if ((productFilter === "" || tdProduct.includes(productFilter)) &&
+            (pathologyFilter === "" || tdPathology.includes(pathologyFilter)) &&
+            (modalityFilter === "" || tdModality.includes(modalityFilter)) &&
+            (bodyPartFilter === "" || tdBodyPart.includes(bodyPartFilter)) &&
+            (regulatoryBodyFilter === "" || tdRegulatoryBody.includes(regulatoryBodyFilter))) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+</script>
+{% endblock %}
