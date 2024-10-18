@@ -15,8 +15,7 @@ Base = declarative_base()
 
 # Database connection string (adjust as necessary)
 engine = create_engine(
-    'sqlite:///your_database.db',
-    connect_args={'timeout': 15},  # Wait 15 seconds before raising a "database locked" error
+    'postgresql+psycopg2://darwinist:darwinist@localhost/darwinist',
     pool_size=10,  # Max number of connections in the pool
     max_overflow=20  # Max number of extra connections when the pool is full
     )
