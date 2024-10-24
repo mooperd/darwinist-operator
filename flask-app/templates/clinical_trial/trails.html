@@ -16,9 +16,10 @@
     </thead>
     <tbody>
         {% for trial in trials %}
+
         <tr>
             <td>{{ trial.trial_id }}</td>
-            <td>{{ trial.trail_name }}</td>
+            <td>{{ trial.trial_name }}</td>
             <td>{{ trial.product.product_name }}</td>
             <td>{{ trial.trial_type }}</td>
             <td>{{ trial.start_date.strftime('%Y-%m-%d') }}</td>

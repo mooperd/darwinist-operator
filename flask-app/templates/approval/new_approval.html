@@ -12,7 +12,7 @@
         {% endif %}
     {% endwith %}
     
-    <form method="POST" action="{{ url_for('new_approval') }}">
+    <form method="POST" action="{{ url_for('approvals') }}">
         <label for="approval_date">Approval Date:</label>
         <input type="date" id="approval_date" name="approval_date" required><br>
 

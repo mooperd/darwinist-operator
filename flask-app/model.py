@@ -9,6 +9,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
+from urllib.parse import urlparse
+
 
 # Define the declarative base
 Base = declarative_base()
@@ -147,11 +149,22 @@ class Patient(Base):
     name = Column(String, nullable=False)
     age = Column(Integer)
     gender = Column(Enum('Male', 'Female', 'Other', name='gender_enum'))
-    medical_history = Column(String)
+    medical_history = Column(String, nullable=True)
+    input_data_uri = Column(String, nullable=True)
 
     # Relationships
     enrollments = relationship('TrialEnrollment', back_populates='patient')
 
+    def get_s3_http_url(self):
+        """
+        Converts the S3 URI to an accessible HTTP URL.
+        """
+        if self.input_data_uri and self.input_data_uri.startswith("s3://"):
+            parsed_url = urlparse(self.input_data_uri)
+            bucket_name = parsed_url.netloc
+            object_key = parsed_url.path.lstrip('/')
+            return f"https://{bucket_name}.s3.amazonaws.com/{object_key}"
+        return None
 
 class TrialEnrollment(Base):
     __tablename__ = 'trial_enrollments'

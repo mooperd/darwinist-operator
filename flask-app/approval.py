@@ -19,7 +19,7 @@ def index():
 
 
 @app.route('/approvals/new', methods=['GET', 'POST'])
-def new_approval():
+def approvals():
     session = Session()
     
     # Handle form submission
@@ -57,7 +57,7 @@ def new_approval():
         except Exception as e:
             session.rollback()
             flash(f"Error creating approval: {str(e)}", "danger")
-            return redirect(url_for('new_approval'))
+            return redirect(url_for('approvals'))
     
     # For GET request, render the form
     products = session.query(Product).all()

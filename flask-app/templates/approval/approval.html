@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <h1>Approvals</h1>
-    <a href="{{ url_for('new_approval') }}">Create New Approval</a>
+    <a href="{{ url_for('approvals') }}">Create New Approval</a>
 
     <!-- Filter dropdowns -->
     <div class="filters">
@@ -54,38 +54,52 @@
     </div>
 
 
-    <!-- Table to display approvals -->
-    <table id="approvalsTable" border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Approval Date</th>
-                <th>Status</th>
-                <th>ID Code</th>
-                <th>Product</th>
-                <th>Pathology</th>
-                <th>Modality</th>
-                <th>Body Part</th>
-                <th>Regulatory Body</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for approval in approvals %}
-            <tr>
-                <td>{{ approval.approval_id }}</td>
-                <td>{{ approval.approval_date }}</td>
-                <td>{{ approval.approval_status }}</td>
-                <td>{{ approval.id_code }}</td>
-                <td>{{ approval.product.product_name }}</td>
-                <td>{{ approval.pathology.name }}</td>
-                <td>{{ approval.modality.name }}</td>
-                <td>{{ approval.body_part.name }}</td>
-                <td>{{ approval.regulatory_body.name }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <!-- Table to display approvals grouped by vendor -->
+    <div>
+        <table id="approvalsTable" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Approval Date</th>
+                    <th>Status</th>
+                    <th>ID Code</th>
+                    <th>Product</th>
+                    <th>Pathology</th>
+                    <th>Modality</th>
+                    <th>Body Part</th>
+                    <th>Regulatory Body</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set ns = namespace(current_vendor=none) %}
+                {% for approval in approvals|sort(attribute='product.vendor.product_name') %}
+                {% if ns.current_vendor != approval.product.product_name %}
+                    <!-- Vendor Header Row -->
+                    <tr>
+                        <td colspan="9" style="font-weight: bold; background-color: #f0f0f0;">
+                            <h3>{{ approval.product.vendor.vendor_name }} - {{ approval.product.product_name }}</h3>
+                        </td>
+                    </tr>
+                    {% set ns.current_vendor = approval.product.product_name %}
+                {% endif %}
+                
+                <!-- Approval Row -->
+                <tr>
+                    <td>{{ approval.approval_id }}</td>
+                    <td>{{ approval.approval_date }}</td>
+                    <td>{{ approval.approval_status }}</td>
+                    <td>{{ approval.id_code }}</td>
+                    <td>{{ approval.product.product_name }}</td>
+                    <td>{{ approval.pathology.name }}</td>
+                    <td>{{ approval.modality.name }}</td>
+                    <td>{{ approval.body_part.name }}</td>
+                    <td>{{ approval.regulatory_body.name }}</td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> 
 
 <script>
 function filterTable() {

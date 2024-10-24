@@ -134,7 +134,7 @@ def launch_image_processing_jobs(trial_id):
                 session.commit()
             except client.rest.ApiException as e:
                 session.rollback()
-                flash(f'Error creating ImageProcessingJob for patient {patient.Name}: {e.reason}', 'danger')
+                flash(f'Error creating ImageProcessingJob for patient {patient.name}: {e.reason}', 'danger')
                 return redirect(url_for('trial_detail_gui', trial_id=trial_id))
 
         flash('Image Processing Jobs launched successfully for all enrolled patients.', 'success')
@@ -204,7 +204,7 @@ def list_jobs():
         return render_template('jobs/list_jobs.html', jobs=job_list, form=form, job_trial_mapping=job_trial_mapping)
     except client.rest.ApiException as e:
         flash(f'Error retrieving jobs: {str(e)}', 'danger')
-        return redirect(url_for('index'))
+        return redirect(url_for('jobs/list_jobs.html'))
     finally:
         session.close()
 

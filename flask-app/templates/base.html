@@ -31,28 +31,19 @@
                     </div>
                 </li>
 
-                <!-- Vendor Menu -->
+                <!-- Approvals -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="vendorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Vendors
+                    <a class="nav-link dropdown-toggle" href="#" id="trialDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Approvals
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="vendorDropdown">
-                        <a class="dropdown-item" href="{{ url_for('list_vendors_gui') }}">List Vendors</a>
+                    <div class="dropdown-menu" aria-labelledby="trialDropdown">
+                        <a class="dropdown-item" href="{{ url_for('approvals') }}">Approvals</a>
                         {% if current_user.is_authenticated %}
-                        <a class="dropdown-item" href="{{ url_for('add_vendor_gui') }}">Add Vendor</a>
+                        <a class="dropdown-item" href="{{ url_for('list_patients_gui') }}">List Patients</a>
                         {% endif %}
                     </div>
                 </li>
 
-                <!-- Product Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="productDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Products
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="productDropdown">
-                        <a class="dropdown-item" href="{{ url_for('list_products_gui') }}">List Products</a>
-                    </div>
-                </li>
 
                 <!-- Clinical Trial Menu -->
                 <li class="nav-item dropdown">

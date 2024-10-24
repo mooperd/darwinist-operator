@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Clinical Trial Details - {{ trial.TrialName }}</h2>
+    <h2>Clinical Trial Details - {{ trial.trial_name }}</h2>
 
     <!-- Display trial details here -->
 
@@ -17,6 +17,7 @@
         <thead>
             <tr>
                 <th>Patient Name</th>
+                <th>Image</th>
                 <th>Date Enrolled</th>
                 <th>Image Processing Job ID</th>
                 <th>Job Status</th>
@@ -27,23 +28,30 @@
             {% for enrollment in trial.enrollments %}
             <tr>
                 <td>{{ enrollment.patient.name }}</td>
-                <td>{{ enrollment.date_enrolled }}</td>
-                <td>{{ enrollment.ImageProcessingJobID or 'N/A' }}</td>
                 <td>
-                    {% if enrollment.ImageProcessingJobID %}
-                        {% set job_status = get_job_status(enrollment.ImageProcessingJobID) %}
+                    {% if enrollment.patient.input_data_uri %}
+                        <img src="{{ enrollment.patient.get_s3_http_url() }}" alt="Patient Image" width="100" height="100" />
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ enrollment.date_enrolled }}</td>
+                <td>{{ enrollment.image_processing_job_id or 'N/A' }}</td>
+                <td>
+                    {% if enrollment.image_processing_job_id %}
+                        {% set job_status = get_job_status(enrollment.image_processing_job_id) %}
                         {{ job_status.state or 'Pending' }}
                     {% else %}
                         N/A
                     {% endif %}
                 </td>
                 <td>
-                    {% if enrollment.ImageProcessingJobID %}
-                        <a href="{{ url_for('job_detail', name=enrollment.ImageProcessingJobID) }}" class="btn btn-primary btn-sm">View Job</a>
+                    {% if enrollment.image_processing_job_id %}
+                        <a href="{{ url_for('job_detail', name=enrollment.image_processing_job_id) }}" class="btn btn-primary btn-sm">View Job</a>
                     {% else %}
                         <!-- Optionally, add a button to launch job for this patient -->
                     {% endif %}
-                </td>
+                </td>                
             </tr>
             {% endfor %}
         </tbody>
@@ -52,19 +60,19 @@
     <!-- Back to Trials List -->
     <a href="{{ url_for('list_trials_gui') }}" class="btn btn-secondary">Back to Trials List</a>
 </div>
-
-<h3>Enroll a Patient</h3>
-<form method="POST" action="{{ url_for('enroll_patient_gui', trial_id=trial.trial_id) }}">
-    <div class="form-group">
-        <label for="patient_id">Select Patient:</label>
-        <select name="patient_id" class="form-control" required>
-            <option value="">-- Select a Patient --</option>
-            {% for patient in patients %}
-                <option value="{{ patient.patient_id }}">{{ patient.Name }} (ID: {{ patient.patient_id }})</option>
-            {% endfor %}
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">Enroll Patient</button>
-</form>
-
+<div class="container mt-5">
+    <h3>Enroll a Patient</h3>
+    <form method="POST" action="{{ url_for('enroll_patient_gui', trial_id=trial.trial_id) }}">
+        <div class="form-group">
+            <label for="patient_id">Select Patient:</label>
+            <select name="patient_id" class="form-control" required>
+                <option value="">-- Select a Patient --</option>
+                {% for patient in patients %}
+                    <option value="{{ patient.patient_id }}">{{ patient.name }} (ID: {{ patient.patient_id }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Enroll Patient</button>
+    </form>
+</div>
 {% endblock %}

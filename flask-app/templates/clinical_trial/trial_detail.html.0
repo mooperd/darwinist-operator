@@ -23,7 +23,7 @@
     <tbody>
         {% for enrollment in trial.enrollments %}
         <tr>
-            <td>{{ enrollment.patient.Name }}</td>
+            <td>{{ enrollment.patient.name }}</td>
             <td>{{ enrollment.date_enrolled }}</td>
             <td>{{ enrollment.ImageProcessingJobID }}</td>
             <td>
@@ -51,7 +51,7 @@
 <ul>
     {% for enrollment in trial.enrollments %}
     <li>
-        <a href="{{ url_for('patient_detail_gui', patient_id=enrollment.patient.patient_id) }}">{{ enrollment.patient.Name }}</a> - Enrolled on {{ enrollment.date_enrolled.strftime('%Y-%m-%d') }}
+        <a href="{{ url_for('patient_detail_gui', patient_id=enrollment.patient.patient_id) }}">{{ enrollment.patient.name }}</a> - Enrolled on {{ enrollment.date_enrolled.strftime('%Y-%m-%d') }}
     </li>
     {% else %}
     <p>No patients enrolled yet.</p>

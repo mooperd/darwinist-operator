@@ -7,3 +7,4 @@ faker
 markdown
 psycopg2-binary
 kubernetes
+boto3

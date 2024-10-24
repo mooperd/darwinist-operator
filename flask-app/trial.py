@@ -93,15 +93,15 @@ def edit_trial_gui(trial_id):
             abort(404, description="Clinical trial not found")
 
         if request.method == 'POST':
-            trial.TrialName = request.form['TrialName']
-            trial.Description = request.form['Description']
+            trial.trail_name = request.form['trail_name']
+            trial.description = request.form['description']
             trial_type = request.form['TrialType']
             start_date = request.form['StartDate']
             end_date = request.form.get('EndDate')
             product_id = request.form['ProductID']
 
             # Validate required fields
-            if not trial.TrialName or not start_date or not trial_type or not product_id:
+            if not trial.trail_name or not start_date or not trial_type or not product_id:
                 flash('Please fill in all required fields', 'danger')
                 return redirect(url_for('edit_trial_gui', trial_id=trial_id))
 
@@ -212,12 +212,12 @@ def edit_patient_gui(patient_id):
             abort(404, description="Patient not found")
 
         if request.method == 'POST':
-            patient.Name = request.form['Name']
-            patient.Age = request.form['Age'] if request.form['Age'] else None
-            patient.Gender = request.form['Gender']
+            patient.name = request.form['Name']
+            patient.age = request.form['Age'] if request.form['Age'] else None
+            patient.gender = request.form['Gender']
             patient.medical_history = request.form['medical_history']
 
-            if not patient.Name or not patient.Gender:
+            if not patient.name or not patient.gender:
                 flash('Name and Gender are required', 'danger')
                 return redirect(url_for('edit_patient_gui', patient_id=patient_id))
 

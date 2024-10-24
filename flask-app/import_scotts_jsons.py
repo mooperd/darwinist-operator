@@ -4,10 +4,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from model import *
 import os
 
-
 # Assuming the engine has already been defined and is connected to your database
 session = Session
-create_all()
 
 def load_data(data):
     try:
@@ -23,7 +21,7 @@ def load_data(data):
         # Process the products
         for product_data in data['products']:
             product = Product(
-                product_name=product_data['product_name'],
+                product_name=product_data['ProductName'],
                 description=product_data['Description'],
                 dicom_output=product_data['DICOMOutput'],
                 vendor_id=vendor.vendor_id
