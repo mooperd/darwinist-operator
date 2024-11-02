@@ -37,13 +37,14 @@ def load_data(data):
                     pathology = Pathology(name=pathology_data['name'])
                     session.add(pathology)
                     session.flush()
-
+                pathology_data['modality'] = pathology_data.get('modality', 'N/A')
                 modality = session.query(Modality).filter_by(name=pathology_data['modality']).first()
                 if not modality:
                     modality = Modality(name=pathology_data['modality'])
                     session.add(modality)
                     session.flush()
-
+                
+                pathology_data['body_part'] = pathology_data.get('body_part', 'N/A')
                 body_part = session.query(BodyPart).filter_by(name=pathology_data['body_part']).first()
                 if not body_part:
                     body_part = BodyPart(name=pathology_data['body_part'])
@@ -59,6 +60,8 @@ def load_data(data):
                         session.flush()
 
                     # Create the approval record
+                    approval_data['approval_date'] = approval_data.get('approval_date', '1900-01-01')
+                    approval_data['id'] = approval_data.get('id', 'N/A')
                     approval = Approval(
                         approval_date=approval_data['approval_date'],
                         id_code=approval_data['id'],

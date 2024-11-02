@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
-from utilities import get_job_status
+from utilities import get_job_status, get_image_processing_details
 import model
 
 app = Flask(__name__)
@@ -17,3 +17,7 @@ def load_user(user_id):
 @app.context_processor
 def inject_get_job_status():
     return dict(get_job_status=get_job_status)
+
+@app.context_processor
+def inject_image_processing_details():
+    return dict(get_image_processing_details=get_image_processing_details)

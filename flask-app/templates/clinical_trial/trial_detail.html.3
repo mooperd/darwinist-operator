@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Clinical Trial Details - {{ trial.trial_name }}</h2>
+    <!-- Existing content -->
+
+    <!-- Enrolled Patients Table -->
+    <h3>Enrolled Patients</h3>
+    <table class="table table-bordered" id="patients-table">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Image</th>
+                <th>Date Enrolled</th>
+                <th>Image Processing Job ID</th>
+                <th>Job Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for enrollment in trial.enrollments %}
+            <tr id="enrollment-{{ enrollment.image_processing_job_id }}">
+                <td>{{ enrollment.patient.name }}</td>
+                <td>
+                    {% if enrollment.patient.input_data_uri %}
+                        <img src="{{ enrollment.patient.get_s3_http_url() }}" alt="Patient Image" width="100" height="100" />
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ enrollment.date_enrolled }}</td>
+                <td>{{ enrollment.image_processing_job_id or 'N/A' }}</td>
+                <td class="job-status">
+                    {% if enrollment.image_processing_job_id %}
+                        Loading...
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if enrollment.image_processing_job_id %}
+                        <a href="{{ url_for('job_detail', name=enrollment.image_processing_job_id) }}" class="btn btn-primary btn-sm">View Job</a>
+                    {% else %}
+                        <!-- Optional button -->
+                    {% endif %}
+                </td>                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Existing content -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function updateJobStatuses() {
+        $.getJSON("{{ url_for('job_statuses', trial_id=trial.trial_id) }}", function(data) {
+            $.each(data, function(jobId, jobDetails) {
+                const row = $("#enrollment-" + jobId);
+                const statusCell = row.find(".job-status");
+
+                if (jobDetails.error) {
+                    statusCell.html(`<span class="text-danger">Error: ${jobDetails.error}</span>`);
+                } else {
+                    statusCell.empty();
+                    $.each(jobDetails.pods, function(_, pod) {
+                        let btnClass;
+                        if (pod.phase === "Succeeded") btnClass = "btn-success";
+                        else if (pod.phase === "Running") btnClass = "btn-info";
+                        else if (pod.phase === "Pending") btnClass = "btn-warning";
+                        else if (pod.phase === "Failed") btnClass = "btn-danger";
+                        else btnClass = "btn-secondary";
+
+                        statusCell.append(
+                            `<button type="button" class="btn ${btnClass} btn-sm mb-1">${pod.name} - ${pod.phase}</button>`
+                        );
+                    });
+                }
+            });
+        });
+    }
+
+    // Call `updateJobStatuses` every second
+    setInterval(updateJobStatuses, 1000);
+</script>
+{% endblock %}

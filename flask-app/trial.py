@@ -332,3 +332,5 @@ def add_trial_result_gui(enrollment_id):
         session.rollback()
         flash(f'Error: {str(e)}', 'danger')
         return redirect(url_for('trial_detail_gui', trial_id=enrollment.trial_id))
+
+

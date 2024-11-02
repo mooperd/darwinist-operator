@@ -38,9 +38,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="trialDropdown">
                         <a class="dropdown-item" href="{{ url_for('approvals') }}">Approvals</a>
-                        {% if current_user.is_authenticated %}
                         <a class="dropdown-item" href="{{ url_for('list_patients_gui') }}">List Patients</a>
-                        {% endif %}
                     </div>
                 </li>
 

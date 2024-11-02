@@ -39,38 +39,8 @@
                 <td>{{ enrollment.image_processing_job_id or 'N/A' }}</td>
                 <td>
                     {% if enrollment.image_processing_job_id %}
-                        {% set job_details = get_image_processing_details(enrollment.image_processing_job_id) %}
-                        
-                        {% if job_details and 'error' not in job_details %}
-                            {% set pods_status = job_details.k8s_job.pods %}
-                            
-                            <!-- Display pods statuses as color-coded buttons -->
-                            <div>
-                                {% for pod in pods_status %}
-                                    {% set phase = pod.status.phase %}
-                                    
-                                    <!-- Determine button color based on pod phase -->
-                                    {% if phase == 'Succeeded' %}
-                                        {% set btn_class = 'btn-success' %}
-                                    {% elif phase == 'Running' %}
-                                        {% set btn_class = 'btn-info' %}
-                                    {% elif phase == 'Pending' %}
-                                        {% set btn_class = 'btn-warning' %}
-                                    {% elif phase == 'Failed' %}
-                                        {% set btn_class = 'btn-danger' %}
-                                    {% else %}
-                                        {% set btn_class = 'btn-secondary' %}
-                                    {% endif %}
-                                    
-                                    <!-- Display button with pod name and status color -->
-                                    <button type="button" class="btn {{ btn_class }} btn-sm mb-1">
-                                        {{ pod.metadata.name }} - {{ phase }}
-                                    </button>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ job_details.error or 'Pending' }}
-                        {% endif %}
+                        {% set job_status = get_job_status(enrollment.image_processing_job_id) %}
+                        {{ job_status.state or 'Pending' }}
                     {% else %}
                         N/A
                     {% endif %}
@@ -90,7 +60,6 @@
     <!-- Back to Trials List -->
     <a href="{{ url_for('list_trials_gui') }}" class="btn btn-secondary">Back to Trials List</a>
 </div>
-
 <div class="container mt-5">
     <h3>Enroll a Patient</h3>
     <form method="POST" action="{{ url_for('enroll_patient_gui', trial_id=trial.trial_id) }}">

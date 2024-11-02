@@ -7,6 +7,7 @@ from wtforms.validators import DataRequired, URL
 from kubernetes import client, config
 from model import *
 from app import app
+from utilities import get_image_processing_details
 import uuid
 import os
 
@@ -324,4 +325,27 @@ def view_pod_logs(namespace, pod_name):
 
     return render_template('jobs/pod_logs.html', pod_name=pod_name, namespace=namespace, logs=logs)
 
+
+from flask import jsonify
+
+@app.route("/api/trial/<int:trial_id>/job_statuses", methods=['GET'])
+def job_statuses(trial_id):
+    trial = Session.query(ClinicalTrial).get(trial_id)
+    job_statuses = {}
+    
+    for enrollment in trial.enrollments:
+        if enrollment.image_processing_job_id:
+            job_details = get_image_processing_details(enrollment.image_processing_job_id)
+            job_statuses[enrollment.image_processing_job_id] = {
+                'error': job_details.get('error'),
+                'pods': [
+                    {
+                        'name': pod.metadata.name,
+                        'phase': pod.status.phase
+                    }
+                    for pod in job_details.get('k8s_job', {}).get('pods', [])
+                ]
+            }
+    
+    return jsonify(job_statuses)
 

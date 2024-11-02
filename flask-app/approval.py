@@ -12,14 +12,14 @@ from datetime import datetime
 
 ## Approval GUI endpoints
 @app.route('/approvals')
-def index():
+def approvals():
     session = Session()
     approvals = session.query(Approval).all()
     return render_template('approval/approval.html', approvals=approvals)
 
 
 @app.route('/approvals/new', methods=['GET', 'POST'])
-def approvals():
+def new_approval():
     session = Session()
     
     # Handle form submission

@@ -1,24 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container">
     <h1>Approvals</h1>
-    <a href="{{ url_for('approvals') }}" class="btn btn-primary mb-3">Create New Approval</a>
-    
+    <a href="{{ url_for('approvals') }}">Create New Approval</a>
     <!-- Table to display approvals grouped by vendor -->
-    <div class="table-responsive">
-        <table id="approvalsTable" class="table table-striped table-hover">
-            <thead class="thead-dark">
+    <div>
+        <table id="approvalsTable" border="1">
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Approval Date</th>
+                    <th>Status</th>
+                    <th>ID Code</th>
                     <th>Product</th>
                     <th>Pathology</th>
                     <th>Modality</th>
                     <th>Body Part</th>
                     <th>Regulatory Body</th>
-                    <th>Status</th>
-                    <th>ID Code</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,9 +25,9 @@
                 {% for approval in approvals|sort(attribute='product.vendor.product_name') %}
                 {% if ns.current_vendor != approval.product.product_name %}
                     <!-- Vendor Header Row -->
-                    <tr class="table-secondary">
-                        <td colspan="9" class="font-weight-bold">
-                            <h5 class="mb-0">{{ approval.product.vendor.vendor_name }} - {{ approval.product.product_name }}</h5>
+                    <tr>
+                        <td colspan="9" style="font-weight: bold; background-color: #f0f0f0;">
+                            <h3>{{ approval.product.vendor.vendor_name }} - {{ approval.product.product_name }}</h3>
                         </td>
                     </tr>
                     {% set ns.current_vendor = approval.product.product_name %}
@@ -38,13 +37,13 @@
                 <tr>
                     <td>{{ approval.approval_id }}</td>
                     <td>{{ approval.approval_date }}</td>
+                    <td>{{ approval.approval_status }}</td>
+                    <td>{{ approval.id_code }}</td>
                     <td>{{ approval.product.product_name }}</td>
                     <td>{{ approval.pathology.name }}</td>
                     <td>{{ approval.modality.name }}</td>
                     <td>{{ approval.body_part.name }}</td>
                     <td>{{ approval.regulatory_body.name }}</td>
-                    <td>{{ approval.approval_status }}</td>
-                    <td>{{ approval.id_code }}</td>
                 </tr>
 
                 {% endfor %}

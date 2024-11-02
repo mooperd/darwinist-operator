@@ -6,9 +6,12 @@ from datetime import date, timedelta
 from sqlalchemy.orm import sessionmaker
 from faker import Faker
 from model import *
+from random import randrange
+import uuid
+
 
 # Constants for the directory and S3 bucket
-IMAGE_DIRECTORY = "/Users/andrew/Darwinist/darwinist-operator/flask-app/prostate_jpeg"
+IMAGE_DIRECTORY = "/Users/andrew/Darwinist/darwinist-operator/prostate_jpeg"
 S3_BUCKET = 'ee11f0132e5b'
 
 # Initialize the S3 client
@@ -66,11 +69,11 @@ def create_patients(num_patients):
 def create_clinical_trial():
     """Create a new clinical trial and return the trial object."""
     trial = ClinicalTrial(
-        trial_name="New Clinical Trial",
+        trial_name="Trial {}".format(str(uuid.uuid4())[:8]),
         description="This is a trial created for testing 100 patients.",
         start_date=date.today(),
         trial_type="formal",
-        product_id=2  # Assuming there's a product with ID 1
+        product_id=random.randint(1, 29)  # Assuming there's a product with ID 1
     )
     session.add(trial)
     session.commit()

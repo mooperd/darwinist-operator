@@ -18,9 +18,11 @@ def truncate_tables():
         # List of tables to exclude from truncation
         exclude_tables = ['users']
 
+        tables = ['approvals', 'regulatory_bodies', 'pathologies', 'body_parts', 'modalities', 'products', 'vendors']
+
         # Iterate through all the tables in the metadata and truncate them
         for table in reversed(metadata.sorted_tables):
-            if table.name not in exclude_tables:
+            if table.name in tables:
                 print(f'Truncating table {table.name}...')
                 session.execute(text(f'TRUNCATE TABLE {table.name} RESTART IDENTITY CASCADE;'))
 
